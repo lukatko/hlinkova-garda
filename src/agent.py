@@ -328,17 +328,17 @@ CRITICAL:
 - Do NOT include explanatory text in your final answer
 
 EXAMPLE:
-"1": {
+"1": {{
       "question": "How many easter eggs did Erste Group hide in their 2024 annual report?",
       "answer": 42,
       "sources": [
-        {
+        {{
           "source_name": "Erste_Group_2024.pdf",
           "source_type": "PDF",
           "page_number": 123
-        }
+        }}
       ]
-    }"""
+    }}"""
             }
         ]
 
