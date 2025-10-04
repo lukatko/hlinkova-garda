@@ -60,6 +60,26 @@ flowchart LR
 - To submit your results during the event, use the submission endpoint `/submit`
 - To submit your **final results of the private set**, use the submission endpoint `/submit-private`
 
+### Automatic submission script
+
+There's a small helper script to upload a submission JSON to the server:
+
+   scripts/submit_submission.py
+
+It uses `requests` and supports a dry-run. Example:
+
+```bash
+python scripts/submit_submission.py --file data/sample_submission.json --endpoint submit
+```
+
+If `requests` is not installed you can add it using the project's `uv` workflow or pip:
+
+```bash
+uv add requests
+# or
+pip install requests
+```
+
 
 
 ## Nice reads
