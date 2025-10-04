@@ -488,6 +488,85 @@ EXAMPLE:
         raise Exception(f"Tool {tool_name} not found in any available clients")
 
 
+def parse_answer_and_sources(answer: str, question_data: dict):
+    """Parse answer and sources from Claude's response"""
+    import re
+    import json as json_parser
+    
+    if not answer:
+        return None, []
+    
+    # Extract content after : and before first comma using regex
+    match = re.search(r'"answer": (.*?),', answer)
+    ans_final = match.group(1).strip() if match else answer
+    
+    # Convert ans_final to the correct type based on answer_type
+    answer_type = question_data.get('answer_type', 'string')
+    
+    if ans_final and ans_final != answer:
+        # Remove quotes if present
+        if ans_final.startswith('"') and ans_final.endswith('"'):
+            ans_final = ans_final[1:-1]
+        
+        # Convert based on answer_type
+        try:
+            if answer_type == 'number' or answer_type == 'float':
+                ans_final = round(float(ans_final), 3)
+            elif answer_type == 'integer' or answer_type == 'int':
+                ans_final = int(float(ans_final))  # Handle decimals that should be ints
+            elif answer_type == 'boolean' or answer_type == 'bool':
+                ans_final = ans_final.lower() in ('true', '1', 'yes')
+            elif answer_type == 'string' or answer_type == 'str':
+                ans_final = str(ans_final)
+            elif ans_final.lower() == 'null':
+                ans_final = None
+        except (ValueError, TypeError):
+            # If conversion fails, keep as string
+            pass
+    
+    # Extract sources - expect list or null at the end
+    sources_match = re.search(r'"sources": ((?:\[.*?\]|null))(?:\s*\})?', answer, re.DOTALL)
+    sources_final = []
+    if sources_match:
+        sources_text = sources_match.group(1).strip()
+        try:
+            # Try to parse as JSON (handles both lists and null)
+            sources_final = json_parser.loads(sources_text)
+        except:
+            # If parsing fails, keep as empty list
+            sources_final = []
+    
+    return ans_final, sources_final
+
+
+def save_answer_to_file(question_num: int, question_data: dict, answer: str):
+    """Save answer immediately to submission.json"""
+    output_file = get_root_dir() / 'submission.json'
+    
+    # Load existing or create new
+    try:
+        with open(output_file, 'r') as f:
+            submission = json.load(f)
+    except FileNotFoundError:
+        submission = {"team_name": "hlinkova garda", "answers": {}}
+    
+    # Parse the answer and sources
+    parsed_answer, parsed_sources = parse_answer_and_sources(answer, question_data)
+    
+    # Add this answer with proper parsing
+    submission["answers"][str(question_num)] = {
+        "question": question_data['question'],
+        "answer": parsed_answer,
+        "sources": parsed_sources
+    }
+    
+    # Save immediately
+    with open(output_file, 'w') as f:
+        json.dump(submission, f, indent=2)
+    
+    print(f"✓ Saved answer {question_num} to submission.json")
+
+
 async def main(verbose: bool = True):
     agent = Agent()
     
@@ -509,6 +588,10 @@ async def main(verbose: bool = True):
             try:
                 answer = await agent.answer_question(q)
                 answers.append(answer)
+                
+                # Save answer immediately
+                save_answer_to_file(i, q, answer)
+                
                 if verbose:
                     print(f"{i}.\nQuestion: {q}\nAnswer: {answer}\n")
             except Exception as e:
@@ -562,50 +645,9 @@ async def main(verbose: bool = True):
     }
     
     for i, answer in enumerate(answers, 1):
-        import re
-        import json as json_parser
-        # Extract content after : and before first comma using regex
-        match = re.search(r'"answer": (.*?),', answer) if answer else None
-        ans_final = match.group(1).strip() if match else answer
-        
-        # Convert ans_final to the correct type based on answer_type
-        question = questions[i-1]
-        answer_type = question.get('answer_type', 'string')
-        
-        if ans_final and ans_final != answer:
-            # Remove quotes if present
-            if ans_final.startswith('"') and ans_final.endswith('"'):
-                ans_final = ans_final[1:-1]
-            
-            # Convert based on answer_type
-            try:
-                if answer_type == 'number' or answer_type == 'float':
-                    ans_final = round(float(ans_final), 3)
-                elif answer_type == 'integer' or answer_type == 'int':
-                    ans_final = int(float(ans_final))  # Handle decimals that should be ints
-                elif answer_type == 'boolean' or answer_type == 'bool':
-                    ans_final = ans_final.lower() in ('true', '1', 'yes')
-                elif answer_type == 'string' or answer_type == 'str':
-                    ans_final = str(ans_final)
-                elif ans_final.lower() == 'null':
-                    ans_final = None
-            except (ValueError, TypeError):
-                # If conversion fails, keep as string
-                pass
-        
-        # Extract sources - expect list or null at the end
-        sources_match = re.search(r'"sources": ((?:\[.*?\]|null))(?:\s*\})?', answer, re.DOTALL) if answer else None
-        sources_final = []
-        if sources_match:
-            sources_text = sources_match.group(1).strip()
-            try:
-                # Try to parse as JSON (handles both lists and null)
-                sources_final = json_parser.loads(sources_text)
-            except:
-                # If parsing fails, keep as empty list
-                sources_final = []
-        
         if answer is not None:
+            # Use the same parsing function
+            ans_final, sources_final = parse_answer_and_sources(answer, questions[i-1])
             submission["answers"][str(i)] = {
                 "question": questions[i-1]['question'],
                 "answer": ans_final,
