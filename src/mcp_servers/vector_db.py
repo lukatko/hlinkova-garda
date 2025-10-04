@@ -1,10 +1,10 @@
 """
-MCP server for vector database queries using FAISS and sentence transformers.
-Assumes the FAISS index and chunks are already prepared.
+MCP server for vector database queries using ChromaDB and sentence transformers.
+Assumes the ChromaDB collection and chunks are already prepared.
 """
 
 import json
-import faiss
+import chromadb
 import numpy as np
 from sentence_transformers import SentenceTransformer
 from mcp.server.fastmcp import FastMCP
@@ -16,24 +16,37 @@ from typing import List, Dict, Any
 mcp = FastMCP("Vector_Database")
 
 # Configuration
-FAISS_INDEX_FILE = "faiss_index.bin"
+CHROMA_DB_PATH = "./chroma_db"
+COLLECTION_NAME = "pdf_chunks"
 CHUNKS_FILE = "chunks.json"
 MODEL_NAME = "all-MiniLM-L6-v2"
 
 # Global variables for lazy loading
-_index = None
+_client = None
+_collection = None
 _chunks = None
 _model = None
 
-def _get_index():
-    """Lazy load FAISS index"""
-    global _index
-    if _index is None:
-        index_path = get_root_dir() / FAISS_INDEX_FILE
-        if not index_path.exists():
-            raise FileNotFoundError(f"FAISS index not found at {index_path}")
-        _index = faiss.read_index(str(index_path))
-    return _index
+def _get_client():
+    """Lazy load ChromaDB client"""
+    global _client
+    if _client is None:
+        chroma_path = get_root_dir() / CHROMA_DB_PATH
+        if not chroma_path.exists():
+            raise FileNotFoundError(f"ChromaDB not found at {chroma_path}")
+        _client = chromadb.PersistentClient(path=str(chroma_path))
+    return _client
+
+def _get_collection():
+    """Lazy load ChromaDB collection"""
+    global _collection
+    if _collection is None:
+        client = _get_client()
+        try:
+            _collection = client.get_collection(COLLECTION_NAME)
+        except Exception as e:
+            raise FileNotFoundError(f"Collection '{COLLECTION_NAME}' not found in ChromaDB: {e}")
+    return _collection
 
 def _get_chunks():
     """Lazy load chunks data"""
@@ -70,26 +83,30 @@ def search_documents(query: str, top_k: int = 5) -> List[Dict[str, Any]]:
     
     try:
         # Get components
-        index = _get_index()
-        chunks = _get_chunks()
+        collection = _get_collection()
         model = _get_model()
         
         # Encode query
-        query_embedding = model.encode([query]).astype("float32")
+        query_embedding = model.encode(query).tolist()
         
-        # Search in FAISS index
-        distances, indices = index.search(query_embedding, top_k)
+        # Search in ChromaDB collection
+        results_data = collection.query(
+            query_embeddings=[query_embedding],
+            n_results=top_k
+        )
         
         # Format results
         results = []
-        for i, idx in enumerate(indices[0]):
-            if idx < len(chunks):  # Ensure index is valid
-                chunk = chunks[idx]
+        if results_data['documents'] and results_data['documents'][0]:
+            for i in range(len(results_data['documents'][0])):
+                metadata = results_data['metadatas'][0][i] if results_data['metadatas'] else {}
+                distance = results_data['distances'][0][i] if results_data['distances'] else 0.0
+                
                 results.append({
-                    "document": chunk.get("doc", "Unknown"),
-                    "page": chunk.get("page", "Unknown"),
-                    "text": chunk.get("text", ""),
-                    "similarity_score": float(distances[0][i]),
+                    "document": metadata.get("doc", "Unknown"),
+                    "page": metadata.get("page", "Unknown"),
+                    "text": results_data['documents'][0][i],
+                    "similarity_score": float(distance),
                     "rank": i + 1
                 })
         
@@ -153,26 +170,29 @@ def get_vector_db_status() -> Dict[str, Any]:
     """
     try:
         status = {
-            "faiss_index_file": FAISS_INDEX_FILE,
+            "chroma_db_path": CHROMA_DB_PATH,
+            "collection_name": COLLECTION_NAME,
             "chunks_file": CHUNKS_FILE,
             "model_name": MODEL_NAME
         }
         
         # Check if files exist
-        index_path = get_root_dir() / FAISS_INDEX_FILE
+        chroma_path = get_root_dir() / CHROMA_DB_PATH
         chunks_path = get_root_dir() / CHUNKS_FILE
         
-        status["index_exists"] = index_path.exists()
+        status["chroma_db_exists"] = chroma_path.exists()
         status["chunks_exists"] = chunks_path.exists()
         
-        if status["index_exists"] and status["chunks_exists"]:
+        if status["chroma_db_exists"] and status["chunks_exists"]:
             # Get additional stats
             chunks = _get_chunks()
-            index = _get_index()
+            collection = _get_collection()
             
             status["total_chunks"] = len(chunks)
-            status["index_dimension"] = index.d if hasattr(index, 'd') else "Unknown"
-            status["index_total_vectors"] = index.ntotal if hasattr(index, 'ntotal') else "Unknown"
+            
+            # Get collection stats
+            collection_count = collection.count()
+            status["collection_total_vectors"] = collection_count
             
             # Get unique documents
             documents = set()
