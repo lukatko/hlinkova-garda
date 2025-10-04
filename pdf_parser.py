@@ -33,11 +33,26 @@ def parse_pdf(pdf_path):
                 parsed.append({"doc": doc_name, "page": i, "text": text})
     return parsed
 
-# Chunk text while keeping doc + page
+# Chunk text while keeping doc + page - ensures chunks don't cross page boundaries
 def chunk_text(text, doc, page, size=CHUNK_SIZE, overlap=CHUNK_OVERLAP):
     words = text.split()
-    for i in range(0, len(words), size - overlap):
-        yield {"doc": doc, "page": page, "text": " ".join(words[i:i+size])}
+    current_pos = 0
+    
+    while current_pos < len(words):
+        # Calculate end position for current chunk
+        end_pos = min(current_pos + size, len(words))
+        
+        # Create chunk
+        chunk_text = " ".join(words[current_pos:end_pos])
+        yield {"doc": doc, "page": page, "text": chunk_text}
+        
+        # Move position forward by (size - overlap), but don't go backwards
+        current_pos = min(len(words), max(current_pos + (size - overlap), current_pos + 1))
+        
+        # If we can't make a meaningful chunk anymore, stop
+        if len(words) - current_pos < size * 0.3:  # Stop if remaining text is less than 30% of chunk size
+            if current_pos < len(words):  # But if there's any text left, yield it as final chunk
+                yield {"doc": doc, "page": page, "text": " ".join(words[current_pos:])}
 
 # Collect chunks from all PDFs
 all_chunks = []
