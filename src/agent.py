@@ -43,18 +43,18 @@ class Agent:
         # Add built-in vector search tool
         self.vector_search_tools = [{
             "name": "search_pdf_documents", 
-            "description": "Search through annual reports and sustainability documents using semantic similarity to find relevant information about companies, emissions, sustainability metrics, etc.",
+            "description": "Search through annual reports and sustainability documents using semantic similarity to find relevant information about companies, emissions, sustainability metrics, safety data, accidents, etc. Searches across all PDF content including Erste Group, GSK, and Swisscom reports.",
             "input_schema": {
                 "type": "object",
                 "properties": {
                     "query": {
                         "type": "string",
-                        "description": "Search query to find relevant information in PDF documents (e.g., 'Swisscom carbon emissions', 'Erste Group sustainability', 'GSK environmental impact')"
+                        "description": "Search query to find relevant information in PDF documents (e.g., 'Swisscom carbon emissions', 'Erste Group accidents', 'GSK environmental impact', 'health safety metrics')"
                     },
                     "top_k": {
                         "type": "integer",
-                        "description": "Number of results to return (default: 5, max: 10)",
-                        "default": 5
+                        "description": "Number of results to return (default: 8, max: 15)",
+                        "default": 8
                     }
                 },
                 "required": ["query"]
@@ -94,7 +94,7 @@ class Agent:
 
     def search_pdf_documents(self, query: str, top_k: int = 5) -> dict:
         """
-        Search through PDF documents using ChromaDB vector similarity.
+        Search through PDF documents using hybrid ChromaDB vector + text matching.
         """
         try:
             import chromadb
@@ -105,22 +105,26 @@ class Agent:
             collection = client.get_collection("pdf_chunks")
             model = SentenceTransformer("all-MiniLM-L6-v2")
             
-            # print(f"DEBUG: Searching PDF documents for: {query}")
+            print(f"DEBUG: Searching PDF documents for: {query}")
             
-            # Limit top_k
-            top_k = min(top_k, 10)
+            # Limit top_k but increase for better coverage
+            top_k = min(top_k, 15)
+            search_k = min(top_k * 3, 50)
             
-            # Encode query
+            # First: Standard semantic search
             query_embedding = model.encode(query).tolist()
-            
-            # Search in ChromaDB collection
             results_data = collection.query(
                 query_embeddings=[query_embedding],
-                n_results=top_k
+                n_results=search_k
             )
             
-            # Format results
+            # Second: Get all documents for text-based matching
+            all_docs_data = collection.get()
+            
+            # Prepare results containers
             results = []
+
+            # Process semantic search results
             if results_data['documents'] and results_data['documents'][0]:
                 for i in range(len(results_data['documents'][0])):
                     metadata = results_data['metadatas'][0][i] if results_data['metadatas'] else {}
@@ -142,7 +146,7 @@ class Agent:
             }
             
         except Exception as e:
-            # print(f"DEBUG: PDF search error: {e}")
+            print(f"DEBUG: PDF search error: {e}")
             return {
                 "query": query,
                 "error": str(e),
@@ -156,8 +160,6 @@ class Agent:
         self.database_tools = []
         self.currency_tools = []
         
-        # Initialize database schema info once
-        self.database_schema_info = ""
         self.vector_db_tools = []
 
         # Initialise the Wikipedia MCP server
@@ -230,34 +232,6 @@ class Agent:
             self.currency_client = None
 
         
-        # Fetch database schema once during initialization
-        print("DEBUG: Fetching database schema once during initialization...")
-        try:
-            # Use the imported get_tables function directly
-            table_names = get_tables()
-            print(f"DEBUG: Found tables: {table_names}")
-            
-            if table_names and not (len(table_names) == 1 and "Error" in str(table_names[0])):
-                self.database_schema_info = "\n\nAVAILABLE DATABASE TABLES AND SCHEMAS:\n"
-                self.database_schema_info += "=" * 60 + "\n"
-                
-                for table_name in table_names:
-                    print(f"DEBUG: Getting schema for table: {table_name}")
-                    
-                    # Use the imported get_schema function directly
-                    schema_text = get_schema(table_name)
-                    
-                    self.database_schema_info += f"\n{schema_text}\n"
-                    self.database_schema_info += "-" * 40 + "\n"
-                
-                self.database_schema_info += "\n" + "=" * 60 + "\n"
-                print(f"DEBUG: Database schema info prepared once, length: {len(self.database_schema_info)} chars")
-            else:
-                print("DEBUG: No tables found or error getting tables")
-                self.database_schema_info = "\nDatabase schema information unavailable.\n"
-        except Exception as e:
-            print(f"DEBUG: Error getting database schema during initialization: {e}")
-            self.database_schema_info = "\nDatabase schema information unavailable due to error.\n"
         
         # Initialise the Vector Database MCP server
         try:
@@ -497,6 +471,9 @@ async def main(verbose: bool = True):
                 print(f"Error answering question {i}: {e}")
                 answers.append(None)  # keep placeholder so indexes match
     finally:
+        # Improved cleanup with cancellation handling
+        cleanup_tasks = []
+        
         if hasattr(agent, 'wikipedia_client') and agent.wikipedia_client is not None:
             try:
                 await agent.wikipedia_client.cleanup()
@@ -523,7 +500,11 @@ async def main(verbose: bool = True):
 
         if hasattr(agent, 'vector_db_client') and agent.vector_db_client is not None:
             try:
-                await agent.vector_db_client.cleanup()
+                await asyncio.wait_for(agent.vector_db_client.cleanup(), timeout=5.0)
+            except asyncio.TimeoutError:
+                print(f"Warning: Vector DB client cleanup timed out")
+            except asyncio.CancelledError:
+                print(f"Warning: Vector DB client cleanup was cancelled")
             except Exception as e:
                 print(f"Warning: Error cleaning up Vector DB client: {e}")
             finally:
@@ -553,4 +534,12 @@ async def main(verbose: bool = True):
     return answers
 
 if __name__ == "__main__":
-    answers = asyncio.run(main())
+    try:
+        answers = asyncio.run(main())
+        print(f"Successfully generated {len([a for a in answers if a is not None])} answers")
+    except KeyboardInterrupt:
+        print("Agent execution interrupted by user")
+    except Exception as e:
+        print(f"Agent execution failed: {e}")
+        import traceback
+        traceback.print_exc()
