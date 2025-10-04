@@ -80,6 +80,7 @@ class Agent:
         
         # Initialize database schema info once
         self.database_schema_info = ""
+        self.vector_db_tools = []
 
         # Initialise the Wikipedia MCP server
         try:
@@ -147,7 +148,6 @@ class Agent:
                     pass
             self.currency_client = None
 
-        self.tools = self.wikipedia_tools + self.database_tools + self.currency_tools + self.math_tools
         
         # Fetch database schema once during initialization
         print("DEBUG: Fetching database schema once during initialization...")
@@ -177,6 +177,29 @@ class Agent:
         except Exception as e:
             print(f"DEBUG: Error getting database schema during initialization: {e}")
             self.database_schema_info = "\nDatabase schema information unavailable due to error.\n"
+        # Initialise the Vector Database MCP server
+        try:
+            self.vector_db_client = MCPClient()
+            await self.vector_db_client.connect_to_server("python", ["-m", "src.mcp_servers.vector_db"])
+
+            vector_db_tools = await self.vector_db_client.list_tools()
+            self.vector_db_tools = [{
+                "name": tool.name,
+                "description": tool.description,
+                "input_schema": tool.inputSchema
+            } for tool in vector_db_tools]
+            print("Vector Database MCP server initialized successfully")
+        except Exception as e:
+            print(f"Warning: Failed to initialize Vector Database MCP server: {e}")
+            # Ensure client is properly cleaned up if initialization fails
+            if hasattr(self, 'vector_db_client') and self.vector_db_client is not None:
+                try:
+                    await self.vector_db_client.cleanup()
+                except:
+                    pass
+            self.vector_db_client = None
+
+        self.tools = self.wikipedia_tools + self.database_tools + self.currency_tools + self.math_tools + self.vector_db_tools
 
     async def answer_question(self, question: str) -> str:
         """
@@ -215,6 +238,7 @@ Expected answer format examples:
 - For booleans: true or false (not "yes" or "no")  
 - For strings: "Potomac River" (include quotes for string answers)
 - For null answers: null (when information is not available)
+- Vector database tools for searching through document embeddings (annual reports, sustainability reports, etc.)
 
 Important guidelines:
 1. Always cite your sources in your response
@@ -355,6 +379,9 @@ CRITICAL:
             # Handle built-in math tool
             if tool_name == "calculate":
                 return self.calculate(tool_input.get("expression", ""))
+        elif any(tool["name"] == tool_name for tool in self.vector_db_tools):
+            if self.vector_db_client:
+                return await self.vector_db_client.call_tool(tool_name, tool_input)
         
         raise Exception(f"Tool {tool_name} not found in any available clients")
 
@@ -409,6 +436,14 @@ async def main(verbose: bool = True):
                 print(f"Warning: Error cleaning up Currency client: {e}")
             finally:
                 agent.currency_client = None
+
+        if hasattr(agent, 'vector_db_client') and agent.vector_db_client is not None:
+            try:
+                await agent.vector_db_client.cleanup()
+            except Exception as e:
+                print(f"Warning: Error cleaning up Vector DB client: {e}")
+            finally:
+                agent.vector_db_client = None
     
     # Save answers in the required JSON format
     output_file = get_root_dir() / 'submission.json'
