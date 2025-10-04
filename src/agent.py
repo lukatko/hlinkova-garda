@@ -288,14 +288,8 @@ class Agent:
 
 
 You have access to:
-<<<<<<< HEAD
-- Wikipedia tools for general knowledge and current events:
-{self.wikipedia_tools_info}
-- Database tools for querying CO2, energy, and emissions data from Our World in Data
-=======
 - Wikipedia tools for general knowledge and current events
 - Database tools for querying CO2, energy, and emissions data from Our World in Data - Please use the resource to check the available tables and schemas
->>>>>>> bab875217b3a6ba772d0b5cae5fbbd08098e3023
 - Currency conversion tools for converting between different currencies
 - Calculate tool for mathematical operations (addition, subtraction, multiplication, division, percentages, etc.)
 
@@ -311,24 +305,6 @@ Expected answer format examples:
 - For strings: "Potomac River" (include quotes for string answers)
 - For null answers: null (when information is not available)
 
-<<<<<<< HEAD
-Important workflow for Wikipedia:
-1. Start with the **Wikipedia search tool** to find candidate pages.
-2. Use the **Wikipedia page content tool** to extract information.
-3. If Wikipedia only contains **partial information**:
-   - Supplement it with **Database tools** (for numerical values like emissions, GDP, etc.).
-   - Use **Currency tools** when conversions are needed.
-   - Use your own reasoning to combine results.
-4. Always **combine sources** into a single, clear answer.
-5. Explicitly list **all sources you used** in the final JSON:
-   - Wikipedia → `"source_type": "wikipedia"`, `"source_name": "<page title>"`.
-   - Database → `"source_type": "database"`, `"source_name": "owid_co2_data"`.
-   - Currency → `"source_type": "internal"`, `"source_name": "currency_rates.json"`.
-   - If a tool cannot find data, clearly say so instead of guessing.
-
-
-=======
->>>>>>> bab875217b3a6ba772d0b5cae5fbbd08098e3023
 - If multiple tools were used, include all sources in the list.
 - If no sources are available, set `"sources": null`.
 
@@ -349,7 +325,20 @@ CRITICAL:
 - Use the exact table and column names shown in the schemas above
 - For numerical answers, provide precise values without units or explanations
 - If information is not available, return null
-- Do NOT include explanatory text in your final answer"""
+- Do NOT include explanatory text in your final answer
+
+EXAMPLE:
+"1": {
+      "question": "How many easter eggs did Erste Group hide in their 2024 annual report?",
+      "answer": 42,
+      "sources": [
+        {
+          "source_name": "Erste_Group_2024.pdf",
+          "source_type": "PDF",
+          "page_number": 123
+        }
+      ]
+    }"""
             }
         ]
 

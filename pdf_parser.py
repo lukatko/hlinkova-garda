@@ -17,8 +17,8 @@ AZURE_API_KEY = os.getenv("AZURE_API_KEY")
 
 # Config
 PDF_FILES = ["data/annual_reports/Erste_Group_2024.pdf", "data/annual_reports/GSK_esg-performance-report_2023.pdf", "data/annual_reports/swisscom_sustainability_impact_report_2024_en.pdf"]
-CHUNK_SIZE = 800
-CHUNK_OVERLAP = 100
+CHUNK_SIZE = 500
+CHUNK_OVERLAP = 150
 CHUNKS_FILE = "chunks.json"
 
 # 1. Parse PDFs per page
