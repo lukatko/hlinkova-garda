@@ -156,8 +156,6 @@ class Agent:
         self.database_tools = []
         self.currency_tools = []
         
-        # Initialize database schema info once
-        self.database_schema_info = ""
         self.vector_db_tools = []
 
         # Initialise the Wikipedia MCP server
@@ -227,34 +225,6 @@ class Agent:
             self.currency_client = None
 
         
-        # Fetch database schema once during initialization
-        print("DEBUG: Fetching database schema once during initialization...")
-        try:
-            # Use the imported get_tables function directly
-            table_names = get_tables()
-            print(f"DEBUG: Found tables: {table_names}")
-            
-            if table_names and not (len(table_names) == 1 and "Error" in str(table_names[0])):
-                self.database_schema_info = "\n\nAVAILABLE DATABASE TABLES AND SCHEMAS:\n"
-                self.database_schema_info += "=" * 60 + "\n"
-                
-                for table_name in table_names:
-                    print(f"DEBUG: Getting schema for table: {table_name}")
-                    
-                    # Use the imported get_schema function directly
-                    schema_text = get_schema(table_name)
-                    
-                    self.database_schema_info += f"\n{schema_text}\n"
-                    self.database_schema_info += "-" * 40 + "\n"
-                
-                self.database_schema_info += "\n" + "=" * 60 + "\n"
-                print(f"DEBUG: Database schema info prepared once, length: {len(self.database_schema_info)} chars")
-            else:
-                print("DEBUG: No tables found or error getting tables")
-                self.database_schema_info = "\nDatabase schema information unavailable.\n"
-        except Exception as e:
-            print(f"DEBUG: Error getting database schema during initialization: {e}")
-            self.database_schema_info = "\nDatabase schema information unavailable due to error.\n"
         
         # Initialise the Vector Database MCP server
         try:
