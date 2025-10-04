@@ -92,6 +92,9 @@ class Agent:
                 "description": tool.description,
                 "input_schema": tool.inputSchema
             } for tool in wikipedia_tools]
+            self.wikipedia_tools_info = "\n".join(
+    [f"- {t['name']}: {t['description']}, expects input: {t['input_schema']}" for t in self.wikipedia_tools]
+)
             print("Wikipedia MCP server initialized successfully")
         except Exception as e:
             print(f"Warning: Failed to initialize Wikipedia MCP server: {e}")
@@ -193,13 +196,11 @@ class Agent:
             {
                 "role": "user",
                 "content": f"""Answer this question using the available tools: {question['question']},
-                the answer MUST be only one piece of information (the name, boolean, the specific number) 
-                having type {question['answer_type']} and answer having unit {question['unit']}.
-                Always answer the following question exactly. Do not omit, change, or rephrase the question in your final answer. Your answer must directly correspond to this question.
 
 
 You have access to:
-- Wikipedia tools for general knowledge and current events
+- Wikipedia tools for general knowledge and current events:
+{self.wikipedia_tools_info}
 - Database tools for querying CO2, energy, and emissions data from Our World in Data
 - Currency conversion tools for converting between different currencies
 - Calculate tool for mathematical operations (addition, subtraction, multiplication, division, percentages, etc.)
@@ -207,7 +208,7 @@ You have access to:
 {self.database_schema_info}
 
 ANSWER FORMAT REQUIREMENTS:
-Your answer must be in the EXACT format shown below. Do not include explanations, sources, or additional text.
+Your answer must be in the EXACT format shown below with data type {question['answer_type']} in units {question['unit']}. Do not include explanations, or additional text.
 Just provide the raw answer value that matches the expected data type.
 
 Expected answer format examples:
@@ -215,15 +216,6 @@ Expected answer format examples:
 - For booleans: true or false (not "yes" or "no")  
 - For strings: "Potomac River" (include quotes for string answers)
 - For null answers: null (when information is not available)
-
-Important guidelines:
-1. Always cite your sources in your response
-2. Use specific tool calls to gather information
-3. For numerical data, provide precise values when possible
-4. If you need to convert currencies, use the currency conversion tool
-5. If a question requires calculations, show your work
-6. If information is not available, clearly state that
-
 
 Important workflow for Wikipedia:
 1. Start with the **Wikipedia search tool** to find candidate pages.
