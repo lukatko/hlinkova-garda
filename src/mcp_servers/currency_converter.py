@@ -56,7 +56,7 @@ def convert_currency(amount: float, from_currency: str, to_currency: str) -> dic
         "source": "currency_rates.json"
     }
 
-@mcp.resource("available_currencies")
+@mcp.resource("currency://available_currencies")
 def get_available_currencies() -> dict:
     """
     Get list of all available currencies with their full names.
