@@ -10,6 +10,7 @@ https://github.com/modelcontextprotocol/quickstart-resources/blob/main/mcp-clien
 import asyncio
 from src.util.client import MCPClient
 from src.util.utils import get_root_dir
+from src.mcp_servers.database import get_tables, get_schema
 
 from anthropic import Anthropic
 from dotenv import load_dotenv
@@ -22,6 +23,53 @@ class Agent:
     def __init__(self):
         self.tools = []
         self.anthropic = Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY")) # Initialise Claude
+        
+        # Add built-in math tool
+        self.math_tools = [{
+            "name": "calculate",
+            "description": "Execute Python mathematical expressions safely. Use for arithmetic, percentages, conversions, etc.",
+            "input_schema": {
+                "type": "object",
+                "properties": {
+                    "expression": {
+                        "type": "string",
+                        "description": "Python mathematical expression to evaluate (e.g., '(100 * 1.1672)', '(67949000 - 22427000) / 22427000 * 100')"
+                    }
+                },
+                "required": ["expression"]
+            }
+        }]
+    
+    def calculate(self, expression: str) -> dict:
+        """
+        Safely execute Python mathematical expressions.
+        """
+        try:
+            # Only allow safe mathematical operations
+            allowed_names = {
+                "__builtins__": {},
+                "abs": abs, "round": round, "min": min, "max": max,
+                "sum": sum, "pow": pow, "divmod": divmod,
+                # Math functions
+                "math": __import__("math"),
+            }
+            
+            print(f"DEBUG: Calculating expression: {expression}")
+            result = eval(expression, allowed_names, {})
+            print(f"DEBUG: Calculation result: {result}")
+            
+            return {
+                "expression": expression,
+                "result": result,
+                "type": type(result).__name__
+            }
+        except Exception as e:
+            print(f"DEBUG: Calculation error: {e}")
+            return {
+                "expression": expression,
+                "error": str(e),
+                "result": None
+            }
 
     async def initialise_servers(self):
 
@@ -29,6 +77,9 @@ class Agent:
         self.wikipedia_tools = []
         self.database_tools = []
         self.currency_tools = []
+        
+        # Initialize database schema info once
+        self.database_schema_info = ""
 
         # Initialise the Wikipedia MCP server
         try:
@@ -96,7 +147,36 @@ class Agent:
                     pass
             self.currency_client = None
 
-        self.tools = self.wikipedia_tools + self.database_tools + self.currency_tools
+        self.tools = self.wikipedia_tools + self.database_tools + self.currency_tools + self.math_tools
+        
+        # Fetch database schema once during initialization
+        print("DEBUG: Fetching database schema once during initialization...")
+        try:
+            # Use the imported get_tables function directly
+            table_names = get_tables()
+            print(f"DEBUG: Found tables: {table_names}")
+            
+            if table_names and not (len(table_names) == 1 and "Error" in str(table_names[0])):
+                self.database_schema_info = "\n\nAVAILABLE DATABASE TABLES AND SCHEMAS:\n"
+                self.database_schema_info += "=" * 60 + "\n"
+                
+                for table_name in table_names:
+                    print(f"DEBUG: Getting schema for table: {table_name}")
+                    
+                    # Use the imported get_schema function directly
+                    schema_text = get_schema(table_name)
+                    
+                    self.database_schema_info += f"\n{schema_text}\n"
+                    self.database_schema_info += "-" * 40 + "\n"
+                
+                self.database_schema_info += "\n" + "=" * 60 + "\n"
+                print(f"DEBUG: Database schema info prepared once, length: {len(self.database_schema_info)} chars")
+            else:
+                print("DEBUG: No tables found or error getting tables")
+                self.database_schema_info = "\nDatabase schema information unavailable.\n"
+        except Exception as e:
+            print(f"DEBUG: Error getting database schema during initialization: {e}")
+            self.database_schema_info = "\nDatabase schema information unavailable due to error.\n"
 
     async def answer_question(self, question: str) -> str:
         """
@@ -104,6 +184,11 @@ class Agent:
         :param question: a single question as a string
         :return: the answer as a string
         """
+        print(f"DEBUG: Starting to answer question: {question}")
+        
+        # Use pre-fetched database schema info
+        print(f"DEBUG: Using pre-fetched database schema info, length: {len(self.database_schema_info)} chars")
+
         messages = [
             {
                 "role": "user",
@@ -117,6 +202,19 @@ You have access to:
 - Wikipedia tools for general knowledge and current events
 - Database tools for querying CO2, energy, and emissions data from Our World in Data
 - Currency conversion tools for converting between different currencies
+- Calculate tool for mathematical operations (addition, subtraction, multiplication, division, percentages, etc.)
+
+{self.database_schema_info}
+
+ANSWER FORMAT REQUIREMENTS:
+Your answer must be in the EXACT format shown below. Do not include explanations, sources, or additional text.
+Just provide the raw answer value that matches the expected data type.
+
+Expected answer format examples:
+- For numbers: 42 or 42.5 or 412880.659 (not "42" or "42 million")
+- For booleans: true or false (not "yes" or "no")  
+- For strings: "Potomac River" (include quotes for string answers)
+- For null answers: null (when information is not available)
 
 Important guidelines:
 1. Always cite your sources in your response
@@ -141,13 +239,7 @@ Important workflow for Wikipedia:
    - Currency → `"source_type": "internal"`, `"source_name": "currency_rates.json"`.
    - If a tool cannot find data, clearly say so instead of guessing.
 
-Formatting rules for sources:
-- Each source must be a dictionary:
-  {{
-    "source_name": "Erste Group",
-    "source_type": "wikipedia",
-    "page_number": null
-  }}
+
 - If multiple tools were used, include all sources in the list.
 - If no sources are available, set `"sources": null`.
 
@@ -156,23 +248,40 @@ Guidelines:
 - Show calculations if you derived a result.
 - Do not hallucinate data (e.g., no "Scope 5 emissions").
 - If information is missing in all tools, clearly state that.
-"""
+
+Sources format (when available):
+- For PDF files: {{"source_name": "filename.pdf", "source_type": "pdf", "page_number": 123}}
+- For Wikipedia: {{"source_name": "Article Title", "source_type": "wikipedia", "page_number": null}}
+- For database: {{"source_name": "table_name", "source_type": "database", "page_number": null}}
+- When no sources: null
+
+CRITICAL: 
+- If the question requires database information, first generate and execute a SQL query using the query_database tool
+- Use the exact table and column names shown in the schemas above
+- For numerical answers, provide precise values without units or explanations
+- If information is not available, return null
+- Do NOT include explanatory text in your final answer"""
             }
         ]
+
+        print(f"DEBUG: Initial prompt prepared, total length: {messages[0]} chars")
 
         max_iterations = 10  # Prevent infinite loops
         iteration = 0
         
         while iteration < max_iterations:
             iteration += 1
+            print(f"DEBUG: Starting iteration {iteration}")
             
             # Get a response from Claude
+            print("DEBUG: Calling Claude API...")
             response = self.anthropic.messages.create(
                 model="claude-3-5-haiku-20241022",  # Using fastest/cheapest model for hackathon
                 max_tokens=4000,
                 messages=messages,
                 tools=self.tools
             )
+            print(f"DEBUG: Claude response received, stop_reason: {response.stop_reason}")
 
             # Add Claude's response to the conversation
             messages.append({
@@ -182,6 +291,7 @@ Guidelines:
 
             # Check if Claude wants to use tools
             if response.stop_reason == "tool_use":
+                print("DEBUG: Claude wants to use tools")
                 tool_results = []
                 
                 for content_block in response.content:
@@ -190,15 +300,19 @@ Guidelines:
                         tool_input = content_block.input
                         tool_call_id = content_block.id
                         
+                        print(f"DEBUG: Calling tool '{tool_name}' with input: {tool_input}")
+                        
                         try:
                             # Call the appropriate tool based on which client handles it
                             result = await self._call_tool(tool_name, tool_input)
+                            print(f"DEBUG: Tool '{tool_name}' result: {str(result)[:200]}...")
                             tool_results.append({
                                 "type": "tool_result",
                                 "tool_use_id": tool_call_id,
                                 "content": str(result)
                             })
                         except Exception as e:
+                            print(f"DEBUG: Error calling tool '{tool_name}': {e}")
                             tool_results.append({
                                 "type": "tool_result", 
                                 "tool_use_id": tool_call_id,
@@ -210,14 +324,18 @@ Guidelines:
                     "role": "user",
                     "content": tool_results
                 })
+                print(f"DEBUG: Added {len(tool_results)} tool results to conversation")
             else:
+                print("DEBUG: Claude finished, extracting final answer")
                 # No more tool calls, extract the final answer
                 final_response = ""
                 for content_block in response.content:
                     if content_block.type == "text":
                         final_response += content_block.text
+                print(f"DEBUG: Final answer length: {len(final_response)} chars")
                 return final_response.strip()
 
+        print("DEBUG: Maximum iterations reached!")
         return "Maximum iterations reached. Unable to complete the answer."
 
     async def _call_tool(self, tool_name: str, tool_input: dict):
@@ -233,6 +351,10 @@ Guidelines:
         elif any(tool["name"] == tool_name for tool in self.currency_tools):
             if self.currency_client:
                 return await self.currency_client.call_tool(tool_name, tool_input)
+        elif any(tool["name"] == tool_name for tool in self.math_tools):
+            # Handle built-in math tool
+            if tool_name == "calculate":
+                return self.calculate(tool_input.get("expression", ""))
         
         raise Exception(f"Tool {tool_name} not found in any available clients")
 

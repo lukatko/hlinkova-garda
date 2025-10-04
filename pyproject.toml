@@ -11,4 +11,5 @@ dependencies = [
     "pymssql>=2.2.0",
     "pandas>=2.3.2",
     "wikipedia-mcp>=1.6.0",
+    "docling>=2.55.1",
 ]
