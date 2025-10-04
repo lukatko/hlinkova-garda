@@ -39,6 +39,27 @@ class Agent:
                 "required": ["expression"]
             }
         }]
+        
+        # Add built-in vector search tool
+        self.vector_search_tools = [{
+            "name": "search_pdf_documents", 
+            "description": "Search through annual reports and sustainability documents using semantic similarity to find relevant information about companies, emissions, sustainability metrics, etc.",
+            "input_schema": {
+                "type": "object",
+                "properties": {
+                    "query": {
+                        "type": "string",
+                        "description": "Search query to find relevant information in PDF documents (e.g., 'Swisscom carbon emissions', 'Erste Group sustainability', 'GSK environmental impact')"
+                    },
+                    "top_k": {
+                        "type": "integer",
+                        "description": "Number of results to return (default: 5, max: 10)",
+                        "default": 5
+                    }
+                },
+                "required": ["query"]
+            }
+        }]
     
     def calculate(self, expression: str) -> dict:
         """
@@ -71,6 +92,63 @@ class Agent:
                 "result": None
             }
 
+    def search_pdf_documents(self, query: str, top_k: int = 5) -> dict:
+        """
+        Search through PDF documents using ChromaDB vector similarity.
+        """
+        try:
+            import chromadb
+            from sentence_transformers import SentenceTransformer
+            
+            # Initialize
+            client = chromadb.PersistentClient(path="./chroma_db")
+            collection = client.get_collection("pdf_chunks")
+            model = SentenceTransformer("all-MiniLM-L6-v2")
+            
+            # print(f"DEBUG: Searching PDF documents for: {query}")
+            
+            # Limit top_k
+            top_k = min(top_k, 10)
+            
+            # Encode query
+            query_embedding = model.encode(query).tolist()
+            
+            # Search in ChromaDB collection
+            results_data = collection.query(
+                query_embeddings=[query_embedding],
+                n_results=top_k
+            )
+            
+            # Format results
+            results = []
+            if results_data['documents'] and results_data['documents'][0]:
+                for i in range(len(results_data['documents'][0])):
+                    metadata = results_data['metadatas'][0][i] if results_data['metadatas'] else {}
+                    distance = results_data['distances'][0][i] if results_data['distances'] else 0.0
+                    
+                    results.append({
+                        "document": metadata.get("doc", "Unknown"),
+                        "page": metadata.get("page", "Unknown"), 
+                        "text": results_data['documents'][0][i],
+                        "similarity_score": float(distance),
+                        "rank": i + 1
+                    })
+            
+            # print(f"DEBUG: Found {len(results)} PDF document results")
+            return {
+                "query": query,
+                "results": results,
+                "total_found": len(results)
+            }
+            
+        except Exception as e:
+            # print(f"DEBUG: PDF search error: {e}")
+            return {
+                "query": query,
+                "error": str(e),
+                "results": []
+            }
+
     async def initialise_servers(self):
 
         # Initialize tools lists
@@ -80,6 +158,7 @@ class Agent:
         
         # Initialize database schema info once
         self.database_schema_info = ""
+        self.vector_db_tools = []
 
         # Initialise the Wikipedia MCP server
         try:
@@ -150,7 +229,6 @@ class Agent:
                     pass
             self.currency_client = None
 
-        self.tools = self.wikipedia_tools + self.database_tools + self.currency_tools + self.math_tools
         
         # Fetch database schema once during initialization
         print("DEBUG: Fetching database schema once during initialization...")
@@ -180,6 +258,30 @@ class Agent:
         except Exception as e:
             print(f"DEBUG: Error getting database schema during initialization: {e}")
             self.database_schema_info = "\nDatabase schema information unavailable due to error.\n"
+        
+        # Initialise the Vector Database MCP server
+        try:
+            self.vector_db_client = MCPClient()
+            await self.vector_db_client.connect_to_server("python", ["-m", "src.mcp_servers.vector_db"])
+
+            vector_db_tools = await self.vector_db_client.list_tools()
+            self.vector_db_tools = [{
+                "name": tool.name,
+                "description": tool.description,
+                "input_schema": tool.inputSchema
+            } for tool in vector_db_tools]
+            print("Vector Database MCP server initialized successfully")
+        except Exception as e:
+            print(f"Warning: Failed to initialize Vector Database MCP server: {e}")
+            # Ensure client is properly cleaned up if initialization fails
+            if hasattr(self, 'vector_db_client') and self.vector_db_client is not None:
+                try:
+                    await self.vector_db_client.cleanup()
+                except:
+                    pass
+            self.vector_db_client = None
+
+        self.tools = self.wikipedia_tools + self.database_tools + self.currency_tools + self.math_tools + self.vector_db_tools + self.vector_search_tools
 
     async def answer_question(self, question: str) -> str:
         """
@@ -189,8 +291,6 @@ class Agent:
         """
         print(f"DEBUG: Starting to answer question: {question}")
         
-        # Use pre-fetched database schema info
-        print(f"DEBUG: Using pre-fetched database schema info, length: {len(self.database_schema_info)} chars")
 
         messages = [
             {
@@ -199,13 +299,18 @@ class Agent:
 
 
 You have access to:
+<<<<<<< HEAD
 - Wikipedia tools for general knowledge and current events:
 {self.wikipedia_tools_info}
 - Database tools for querying CO2, energy, and emissions data from Our World in Data
+=======
+- Wikipedia tools for general knowledge and current events
+- Database tools for querying CO2, energy, and emissions data from Our World in Data - Please use the resource to check the available tables and schemas
+>>>>>>> bab875217b3a6ba772d0b5cae5fbbd08098e3023
 - Currency conversion tools for converting between different currencies
 - Calculate tool for mathematical operations (addition, subtraction, multiplication, division, percentages, etc.)
 
-{self.database_schema_info}
+If you see 2025 in the question look in the wikipedia first.
 
 ANSWER FORMAT REQUIREMENTS:
 Your answer must be in the EXACT format shown below with data type {question['answer_type']} in units {question['unit']}. Do not include explanations, or additional text.
@@ -217,6 +322,7 @@ Expected answer format examples:
 - For strings: "Potomac River" (include quotes for string answers)
 - For null answers: null (when information is not available)
 
+<<<<<<< HEAD
 Important workflow for Wikipedia:
 1. Start with the **Wikipedia search tool** to find candidate pages.
 2. Use the **Wikipedia page content tool** to extract information.
@@ -232,6 +338,8 @@ Important workflow for Wikipedia:
    - If a tool cannot find data, clearly say so instead of guessing.
 
 
+=======
+>>>>>>> bab875217b3a6ba772d0b5cae5fbbd08098e3023
 - If multiple tools were used, include all sources in the list.
 - If no sources are available, set `"sources": null`.
 
@@ -269,7 +377,8 @@ CRITICAL:
             print("DEBUG: Calling Claude API...")
             response = self.anthropic.messages.create(
                 model="claude-3-5-haiku-20241022",  # Using fastest/cheapest model for hackathon
-                max_tokens=4000,
+                max_tokens=8000,
+                temperature=0.0,  # Low temperature for more consistent, factual answers
                 messages=messages,
                 tools=self.tools
             )
@@ -347,6 +456,16 @@ CRITICAL:
             # Handle built-in math tool
             if tool_name == "calculate":
                 return self.calculate(tool_input.get("expression", ""))
+        elif any(tool["name"] == tool_name for tool in self.vector_search_tools):
+            # Handle built-in vector search tool
+            if tool_name == "search_pdf_documents":
+                return self.search_pdf_documents(
+                    tool_input.get("query", ""), 
+                    tool_input.get("top_k", 5)
+                )
+        elif any(tool["name"] == tool_name for tool in self.vector_db_tools):
+            if self.vector_db_client:
+                return await self.vector_db_client.call_tool(tool_name, tool_input)
         
         raise Exception(f"Tool {tool_name} not found in any available clients")
 
@@ -360,7 +479,7 @@ async def main(verbose: bool = True):
         questions_data = json.load(f)
     
     # Extract just the question text from the data structure
-    questions = [questions_data[str(i)] for i in range(76, len(questions_data) + 1)]
+    questions = [questions_data[str(i)] for i in range(1, 10)]
     
     answers = []
     try:
@@ -401,6 +520,14 @@ async def main(verbose: bool = True):
                 print(f"Warning: Error cleaning up Currency client: {e}")
             finally:
                 agent.currency_client = None
+
+        if hasattr(agent, 'vector_db_client') and agent.vector_db_client is not None:
+            try:
+                await agent.vector_db_client.cleanup()
+            except Exception as e:
+                print(f"Warning: Error cleaning up Vector DB client: {e}")
+            finally:
+                agent.vector_db_client = None
     
     # Save answers in the required JSON format
     output_file = get_root_dir() / 'submission.json'
