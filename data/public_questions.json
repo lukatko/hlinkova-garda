@@ -1,0 +1,1254 @@
+{
+  "1": {
+    "question": "What was the value of total assets of Erste Bank in million USD in 2024, rounded to three decimal places?",
+    "answer": 412880.659,
+    "answer_type": "float",
+    "unit": "USD million",
+    "difficulty": "hard",
+    "comment": "Extracted from the 'Balance sheet (in EUR million)' table under 'Key financial and operating data'. The value is for Dec 24. Converted from EUR to USD by multiplying with 1.1672",
+    "sources": [
+      {
+        "source_name": "Erste_Group_2024.pdf",
+        "source_type": "pdf",
+        "page_number": 3
+      },
+      {
+        "source_name": "currency_rates.json",
+        "source_type": "internal",
+        "page_number": null
+      }
+    ]
+  },
+  "2": {
+    "question": "How many human rights incidents happened at Erste Bank in 2024?",
+    "answer": 0,
+    "answer_type": "int",
+    "unit": "count",
+    "difficulty": "medium",
+    "comment": "Found in the 'S1-17 INCIDENTS, COMPLAINTS AND SEVERE HUMAN RIGHTS IMPACTS' section, which states 'In 2024, no incidents related to human rights have been reported.",
+    "sources": [
+      {
+        "source_name": "Erste_Group_2024.pdf",
+        "source_type": "pdf",
+        "page_number": 295
+      }
+    ]
+  },
+  "3": {
+    "question": "How many tonnes scope 5 greenhouse gas emissions did Erste Bank emit 2024?",
+    "answer": null,
+    "answer_type": "float",
+    "unit": "tCO2eq",
+    "difficulty": "medium",
+    "comment": "Hallucination test: Scope 5 does not exist in the GHG Protocol. The recognized scopes are Scope 1, Scope 2, and Scope 3.",
+    "sources": null
+  },
+  "4": {
+    "question": "Given the turnover and scope 1 greenhouse gas emissions, what is the carbon intensity of Erste Bank in 2024 in tCO2eq per million Euros?",
+    "answer": 1.503,
+    "answer_type": "float",
+    "unit": "tCO2eq/EUR million",
+    "difficulty": "hard",
+    "comment": "Calculated as Scope 1 emissions (16803.0 tCO2eq) divided by turnover (11178.5 EUR million), resulting in approximately 1.503 tCO2eq per million Euros.",
+    "sources": [
+      {
+        "source_name": "Erste_Group_2024.pdf",
+        "source_type": "pdf",
+        "page_number": 3
+      },
+      {
+        "source_name": "Erste_Group_2024.pdf",
+        "source_type": "pdf",
+        "page_number": 264
+      }
+    ]
+  },
+  "5": {
+    "question": "What were the annual CO2 emissions in tonnes for Austria in 2000?",
+    "answer": 76664000.0,
+    "answer_type": "float",
+    "unit": "tonnes",
+    "difficulty": "easy",
+    "comment": "DB entry of 'total_ghg' for Austria with 'year' 2000.",
+    "sources": [
+      {
+        "source_name": "owid_co2_data",
+        "source_type": "database",
+        "page_number": null
+      }
+    ]
+  },
+  "6": {
+    "question": "What were the annual total greenhouse gas emissions in tonnes for Austria in 1923?",
+    "answer": 22427000.0,
+    "answer_type": "float",
+    "unit": "tonnes",
+    "difficulty": "easy",
+    "comment": "DB entry of 'total_ghg' for Austria with 'year' 1923.",
+    "sources": [
+      {
+        "source_name": "owid_co2_data",
+        "source_type": "database",
+        "page_number": null
+      }
+    ]
+  },
+  "7": {
+    "question": "What were the annual CO2 emissions in tonnes for Atlantis in 2023?",
+    "answer": null,
+    "answer_type": "float",
+    "unit": "tonnes",
+    "difficulty": "medium",
+    "comment": "Hallucination test: Atlantis is a fictional place and does not exist in the database.",
+    "sources": null
+  },
+  "8": {
+    "question": "By how many percent did the total greenhouse gas emissions change from the year 1923 to 2023 in Austria?",
+    "answer": 202.979,
+    "answer_type": "float",
+    "unit": "percent",
+    "difficulty": "hard",
+    "comment": "Calculated as ((67949000.0 - 22427000.0) / 22427000.0) * 100, resulting in approximately 202.979 percent increase.",
+    "sources": [
+      {
+        "source_name": "owid_co2_data",
+        "source_type": "database",
+        "page_number": null
+      }
+    ]
+  },
+  "9": {
+    "question": "What was the total number of accidents reported by Erste Group in 2024?",
+    "answer": 231,
+    "answer_type": "int",
+    "unit": "count",
+    "difficulty": "easy",
+    "comment": "Found in the 'Health and safety metrics represented in headcount' table in the Sustainability Statement section. The KPI is named 'Number of recordable work-related accidents' for the year 2024.",
+    "sources": [
+      {
+        "source_name": "Annual Report Erste Group_2024.pdf",
+        "source_type": "pdf",
+        "page_number": 215
+      }
+    ]
+  },
+  "10": {
+    "question": "How many average training hours per employee did Erste Group report in 2024?",
+    "answer": 39.4,
+    "answer_type": "float",
+    "unit": "hours",
+    "difficulty": "easy",
+    "comment": "\"Found in the 'Traning and skills development metrics' table in the Sustainability Statement. The value represents the 'Average training hours' per employee for 2024.\"",
+    "sources": [
+      {
+        "source_name": "Annual Report Erste Group_2024.pdf",
+        "source_type": "pdf",
+        "page_number": 292
+      }
+    ]
+  },
+  "11": {
+    "question": "How many data breaches did Erste Group report in 2024?",
+    "answer": 39,
+    "answer_type": "int",
+    "unit": "count",
+    "difficulty": "easy",
+    "comment": "'In 2024, 39 data breach reports were notified to the relevant data protection authority.'",
+    "sources": [
+      {
+        "source_name": "Annual Report Erste Group_2024.pdf",
+        "source_type": "pdf",
+        "page_number": 300
+      }
+    ]
+  },
+  "12": {
+    "question": "What was the total equity of Erste Group in 2024 in million Swiss francs, rounded to three decimal places?",
+    "answer": 28711.764,
+    "answer_type": "float",
+    "unit": "million CHF",
+    "difficulty": "hard",
+    "comment": "From consolidated balance sheet, given as total equity. Converted from EUR to CHF by multiplying with 0.9332",
+    "sources": [
+      {
+        "source_name": "Annual Report Erste Group_2024.pdf",
+        "source_type": "pdf",
+        "page_number": 316
+      },
+      {
+        "source_name": "currency_rates.json",
+        "source_type": "internal",
+        "page_number": null
+      }
+    ]
+  },
+  "13": {
+    "question": "Does Erste Group acknowledge its impact on climate change through its own operations?",
+    "answer": true,
+    "answer_type": "bool",
+    "unit": "boolean",
+    "difficulty": "easy",
+    "comment": "Explicitly stated that 'The CO2e emissions of Erste Group's own operations and in the upstream value chain contribute to climate change and thus to global warming.'",
+    "sources": [
+      {
+        "source_name": "Annual Report Erste Group_2024.pdf",
+        "source_type": "pdf",
+        "page_number": 236
+      }
+    ]
+  },
+  "14": {
+    "question": "How many percent sustainable corporate financing should be achieved by Erste Group until 2026.",
+    "answer": 25.0,
+    "answer_type": "float",
+    "unit": "percent",
+    "difficulty": "easy",
+    "comment": "Target explicitly stated in sustainability section.",
+    "sources": [
+      {
+        "source_name": "Annual Report Erste_Group_2024.pdf",
+        "source_type": "pdf",
+        "page_number": 248
+      }
+    ]
+  },
+  "15": {
+    "question": "In 2024, sustainable corporate financing accounted for 18% of the corporate financing portfolio of Erste Group.",
+    "answer": true,
+    "answer_type": "bool",
+    "unit": "boolean",
+    "difficulty": "easy",
+    "comment": "Confirmed 'Sustainable financing - actuals and targets' table.",
+    "sources": [
+      {
+        "source_name": "Annual Report Erste_Group_2024.pdf",
+        "source_type": "pdf",
+        "page_number": 263
+      }
+    ]
+  },
+  "16": {
+    "question": "By how much did financing of renewable energy of Erste Group increase in percent from 2023 to 2024?",
+    "answer": 88.644,
+    "answer_type": "float",
+    "unit": "percent",
+    "difficulty": "medium",
+    "comment": "Renewable energy financing went up from 486.1 to 917: (917 - 486.1) / 486.1.",
+    "sources": [
+      {
+        "source_name": "Annual Report Erste_Group_2024.pdf",
+        "source_type": "pdf",
+        "page_number": 237
+      }
+    ]
+  },
+  "17": {
+    "question": "How many tonnes scope 1 greenhouse gas emissions did Erste Bank emit 2023?",
+    "answer": 18701.0,
+    "answer_type": "float",
+    "unit": "tCO2eq",
+    "difficulty": "easy",
+    "comment": "Found in the 'Total GHG emissions' table in the Sustainability Statement. The value is for the 'Reporting year (T)' which corresponds to 2024, under the row 'Gross scope 1 GHG emissions (tCO2e)'.",
+    "sources": [
+      {
+        "source_name": "Erste_Group_2024.pdf",
+        "source_type": "pdf",
+        "page_number": 264
+      }
+    ]
+  },
+  "18": {
+    "question": "Erste Group's 2024 sustainable corporate financing data was externally validated by a third-party auditor.",
+    "answer": false,
+    "answer_type": "bool",
+    "unit": "boolean",
+    "difficulty": "medium",
+    "comment": "Explicitly stated as not externally validated: 'The measurement of this metrics has not been validated by an external body, apart from the assurance provider.'",
+    "sources": [
+      {
+        "source_name": "Annual Report Erste_Group_2024.pdf",
+        "source_type": "pdf",
+        "page_number": 263
+      }
+    ]
+  },
+  "19": {
+    "question": "In 2024, Erste Group received an AAA rating from MSCI for ESG.",
+    "answer": false,
+    "answer_type": "bool",
+    "unit": "boolean",
+    "difficulty": "medium",
+    "comment": "MSCI rating was AA, not AAA.",
+    "sources": [
+      {
+        "source_name": "Annual Report Erste_Group_2024.pdf",
+        "source_type": "pdf",
+        "page_number": 6
+      }
+    ]
+  },
+  "20": {
+    "question": "Erste Group's financed emissions from its loan portfolio in 2024 were 25 million tCO2e.",
+    "answer": null,
+    "answer_type": "bool",
+    "unit": "boolean",
+    "difficulty": "hard",
+    "comment": "Hallucination test. The report does not provide absolute financed emission totals.",
+    "sources": null
+  },
+  "21": {
+    "question": "What were the scope 1 CO2 emissions in tCO2eq reported by GSK in 2023?",
+    "answer": 581000.0,
+    "answer_type": "float",
+    "unit": "tCO2eq",
+    "difficulty": "medium",
+    "comment": "Presented in the Environment data table.",
+    "sources": [
+      {
+        "source_name": "GSK_esg-performance-report-2023 GSK.pdf",
+        "source_type": "PDF",
+        "page_number": 23
+      }
+    ]
+  },
+  "22": {
+    "question": "By how many percent did the GSK operational carbon emissions (Scope 1 and 2 market-based) change in 2023 compared with 2022?",
+    "answer": -9.79,
+    "answer_type": "float",
+    "unit": "percent",
+    "difficulty": "medium",
+    "comment": "Went down from 715 to 645 ktCO2e: (645 - 715) / 715 = -9.790%.",
+    "sources": [
+      {
+        "source_name": "GSK_esg-performance-report_2023.pdf",
+        "source_type": "pdf",
+        "page_number": 23
+      }
+    ]
+  },
+  "23": {
+    "question": "How much total water in million cubic meters did GSK use in 2023?",
+    "answer": 7.4,
+    "answer_type": "float",
+    "unit": "m3",
+    "difficulty": "easy",
+    "comment": "Total water use in 2023 was 7.4 million cubic meters.",
+    "sources": [
+      {
+        "source_name": "GSK_esg-performance-report_2023.pdf",
+        "source_type": "pdf",
+        "page_number": 24
+      }
+    ]
+  },
+  "24": {
+    "question": "How many percent of palm oil is deforestation free?",
+    "answer": 98.0,
+    "answer_type": "float",
+    "unit": "percent",
+    "difficulty": "easy",
+    "comment": "Given in sustainable sourcing table subsection.",
+    "sources": [
+      {
+        "source_name": "GSK_esg-performance-report_2023.pdf",
+        "source_type": "pdf",
+        "page_number": 25
+      }
+    ]
+  },
+  "25": {
+    "question": "How much did total Scope 2 market-based emissions decrease from 2022 to 2023 in tonnes CO2e?",
+    "answer": 24000,
+    "answer_type": "float",
+    "unit": "tCO2e",
+    "difficulty": "medium",
+    "comment": "88 ktCO2e in 2022 -> 64 ktCO2e in 2023, a reduction of 24 ktCO2e.",
+    "sources": [
+      {
+        "source_name": "GSK_esg-performance-report_2023.pdf",
+        "source_type": "pdf",
+        "page_number": 24
+      }
+    ]
+  },
+  "26": {
+    "question": "Did GSK achieve 100% renewable electricity across all sources in 2023?",
+    "answer": false,
+    "answer_type": "bool",
+    "unit": "boolean",
+    "difficulty": "medium",
+    "comment": "Target is for 2025 (imported) and 2030 (all). In 2023 it was 83%.",
+    "sources": [
+      {
+        "source_name": "GSK_esg-performance-report_2023.pdf",
+        "source_type": "pdf",
+        "page_number": 18
+      },
+      {
+        "source_name": "GSK_esg-performance-report_2023.pdf",
+        "source_type": "pdf",
+        "page_number": 19
+      }
+    ]
+  },
+  "27": {
+    "question": "How many tonnes scope 1 greenhouse gas emissions did Swisscom emit 2023?",
+    "answer": 12467.0,
+    "answer_type": "float",
+    "unit": "tCO2eq",
+    "difficulty": "easy",
+    "comment": "Environmental key figures in\nSwitzerland.",
+    "sources": [
+      {
+        "source_name": "swisscom_sustainability_impact_report_2024_en.pdf",
+        "source_type": "pdf",
+        "page_number": 30
+      }
+    ]
+  },
+  "28": {
+    "question": "Did Swisscom use 100% renewable electricity in 2024?",
+    "answer": true,
+    "answer_type": "bool",
+    "unit": "boolean",
+    "difficulty": "easy",
+    "comment": "Confirmed in sustainability targets and achievements section.",
+    "sources": [
+      {
+        "source_name": "swisscom_sustainability_impact_report_2024_en.pdf",
+        "source_type": "pdf",
+        "page_number": 11
+      },
+      {
+        "source_name": "swisscom_sustainability_impact_report_2024_en.pdf",
+        "source_type": "pdf",
+        "page_number": 14
+      }
+    ]
+  },
+  "29": {
+    "question": "What was the CO2 intensity of Swisscom's energy consumption in 2024 (tonnes per TJ)?",
+    "answer": 5.6,
+    "answer_type": "float",
+    "unit": "tonnes/TJ",
+    "difficulty": "easy",
+    "comment": "Reported CO2 intensity of Scope 1+2 energy consumption was 5.6 tonnes/TJ.",
+    "sources": [
+      {
+        "source_name": "swisscom_sustainability_impact_report_2024_en.pdf",
+        "source_type": "pdf",
+        "page_number": 29
+      }
+    ]
+  },
+  "30": {
+    "question": "By how many percent did Swisscom's total Scope 3 emissions change from 2023 to 2024?",
+    "answer": 4.429,
+    "answer_type": "float",
+    "unit": "percent",
+    "difficulty": "hard",
+    "comment": "Scope 3 emissions increased by (from 307,259 to 320,866 tCO2e).",
+    "sources": [
+      {
+        "source_name": "swisscom_sustainability_impact_report_2024_en.pdf",
+        "source_type": "pdf",
+        "page_number": 29
+      }
+    ]
+  },
+  "31": {
+    "question": "What percentage of women were in Swisscom management positions in 2024?",
+    "answer": 15.1,
+    "answer_type": "float",
+    "unit": "percent",
+    "difficulty": "easy",
+    "comment": "Report indicates 15.1% of management positions held by women.",
+    "sources": [
+      {
+        "source_name": "swisscom_sustainability_impact_report_2024_en.pdf",
+        "source_type": "pdf",
+        "page_number": 14
+      }
+    ]
+  },
+  "32": {
+    "question": "Swisscom's total Scope 1 and 2 emissions in Switzerland in 2024 were higher than in 2022.",
+    "answer": false,
+    "answer_type": "bool",
+    "unit": "boolean",
+    "difficulty": "medium",
+    "comment": "They decreased (62,198 t in 2021 ; 53,925 t in 2024).",
+    "sources": [
+      {
+        "source_name": "swisscom_sustainability_impact_report_2024_en.pdf",
+        "source_type": "pdf",
+        "page_number": 28
+      }
+    ]
+  },
+  "33": {
+    "question": "What was the gas consumption for Germany in 2010?",
+    "answer": 880.712,
+    "answer_type": "float",
+    "unit": "TWh",
+    "difficulty": "easy",
+    "comment": "Direct retrieval of column 'gas_consumption' for Germany in 2010.",
+    "sources": [
+      {
+        "source_name": "owid_energy_data",
+        "source_type": "db"
+      }
+    ]
+  },
+  "34": {
+    "question": "What were the total CO2 emissions for World in 1990 (in millions of tonnes)?",
+    "answer": 22728.988,
+    "answer_type": "float",
+    "unit": "million tonnes",
+    "difficulty": "easy",
+    "comment": "Direct retrieval of column 'co2' for World in 1990.",
+    "sources": [
+      {
+        "source_name": "owid_co2_data",
+        "source_type": "db"
+      }
+    ]
+  },
+  "35": {
+    "question": "What was the wind electricity production for India in 2021?",
+    "answer": 68.09,
+    "answer_type": "float",
+    "unit": "TWh",
+    "difficulty": "easy",
+    "comment": "Direct retrieval of column 'wind_electricity' for India in 2021.",
+    "sources": [
+      {
+        "source_name": "owid_energy_data",
+        "source_type": "db"
+      }
+    ]
+  },
+  "36": {
+    "question": "What was the fossil fuel consumption for Canada in 2005?",
+    "answer": 2473.381,
+    "answer_type": "float",
+    "unit": "TWh",
+    "difficulty": "easy",
+    "comment": "Direct retrieval of column 'fossil_fuel_consumption' for Canada in 2005.",
+    "sources": [
+      {
+        "source_name": "owid_energy_data",
+        "source_type": "db"
+      }
+    ]
+  },
+  "37": {
+    "question": "What were the total emissions from coal (coal co2) for South Africa in 2019?",
+    "answer": 394.345,
+    "answer_type": "float",
+    "unit": "million tonnes",
+    "difficulty": "easy",
+    "comment": "Direct retrieval of column 'coal_co2' for South Africa in 2019.",
+    "sources": [
+      {
+        "source_name": "owid_co2_data",
+        "source_type": "db"
+      }
+    ]
+  },
+  "38": {
+    "question": "What was the total amount of electricity generated from hydro (hydro electricity) for Argentina in 2000?",
+    "answer": 28.58,
+    "answer_type": "float",
+    "unit": "TWh",
+    "difficulty": "easy",
+    "comment": "Direct retrieval of column 'hydro_electricity' for Argentina in 2000.",
+    "sources": [
+      {
+        "source_name": "owid_energy_data",
+        "source_type": "db"
+      }
+    ]
+  },
+  "39": {
+    "question": "What was the absolute change in total territorial CO2 emissions for the World between 2000 and 2020?",
+    "answer": 9615.974,
+    "answer_type": "float",
+    "unit": "million tonnes",
+    "difficulty": "medium",
+    "comment": "Calculated as CO2 (2020) - CO2 (2000) for World. Precision 3 decimal places.",
+    "sources": [
+      {
+        "source_name": "owid_co2_data",
+        "source_type": "db"
+      }
+    ]
+  },
+  "40": {
+    "question": "What is the absolute difference in fossil fuel consumption for the United Kingdom between 2020 and 2015?",
+    "answer": -383.323,
+    "answer_type": "float",
+    "unit": "TWh",
+    "difficulty": "medium",
+    "comment": "Calculated as fossil_fuel_consumption (2020) - fossil_fuel_consumption (2015). Precision 3 decimal places.",
+    "sources": [
+      {
+        "source_name": "owid_energy_data",
+        "source_type": "db"
+      }
+    ]
+  },
+  "41": {
+    "question": "What was the total low-carbon electricity generated by France and Germany combined in 2021?",
+    "answer": 803.24,
+    "answer_type": "float",
+    "unit": "TWh",
+    "difficulty": "medium",
+    "comment": "Sum of 'low_carbon_electricity' for France and Germany in 2021. Precision 3 decimal places.",
+    "sources": [
+      {
+        "source_name": "owid_energy_data",
+        "source_type": "db"
+      }
+    ]
+  },
+  "42": {
+    "question": "What is the difference between total CO2 and consumption-based CO2 for Australia in 2020?",
+    "answer": 44.05,
+    "answer_type": "float",
+    "unit": "million tonnes",
+    "difficulty": "medium",
+    "comment": "Calculated as co2 - consumption_co2. A negative number indicates net imported emissions. Precision 3 decimal places.",
+    "sources": [
+      {
+        "source_name": "owid_co2_data",
+        "source_type": "db"
+      }
+    ]
+  },
+  "43": {
+    "question": "What was the total CO2 emissions from Oil and Gas for Saudi Arabia in 2020? Take the non-cumulative values.",
+    "answer": 585.804,
+    "answer_type": "float",
+    "unit": "million tonnes",
+    "difficulty": "medium",
+    "comment": "Sum of 'oil_co2' and 'gas_co2' for Saudi Arabia in 2020. Precision 3 decimal places.",
+    "sources": [
+      {
+        "source_name": "owid_co2_data",
+        "source_type": "db"
+      }
+    ]
+  },
+  "44": {
+    "question": "What was the total biofuel consumption for India and Brazil combined in 2020?",
+    "answer": 258.425,
+    "answer_type": "float",
+    "unit": "TWh",
+    "difficulty": "medium",
+    "comment": "Sum of 'biofuel_consumption' for India and Brazil in 2020. Precision 3 decimal places.",
+    "sources": [
+      {
+        "source_name": "owid_energy_data",
+        "source_type": "db"
+      }
+    ]
+  },
+  "45": {
+    "question": "What percentage of electricity demand was met by low-carbon sources for Canada in 2021?",
+    "answer": 87.603,
+    "answer_type": "float",
+    "unit": "%",
+    "difficulty": "hard",
+    "comment": "Calculated as (low_carbon_electricity / electricity_demand) * 100. 527.93/602.64) * 100",
+    "sources": [
+      {
+        "source_name": "owid_energy_data",
+        "source_type": "db"
+      }
+    ]
+  },
+  "46": {
+    "question": "What was the CO2 emissions per unit of GDP ('co2_per_gdp') for Germany in 2020?",
+    "answer": 0.173,
+    "answer_type": "float",
+    "unit": "kg CO2 per 2011 $",
+    "difficulty": "easy",
+    "comment": "Direct retrieval of 'co2_per_gdp'. High precision (5 decimal places) required for intensity metric.",
+    "sources": [
+      {
+        "source_name": "owid_co2_data",
+        "source_type": "db"
+      }
+    ]
+  },
+  "47": {
+    "question": "What was the consumption-based CO2 emissions per capita for the United Kingdom in 2018?",
+    "answer": 7.948,
+    "answer_type": "float",
+    "unit": "tonnes",
+    "difficulty": "hard",
+    "comment": "Calculated as (Consumption CO2 * 1 million) / Population. Result is in tonnes.",
+    "sources": [
+      {
+        "source_name": "owid_co2_data",
+        "source_type": "db"
+      }
+    ]
+  },
+  "48": {
+    "question": "What was the energy consumption from non-fossil energy sources per capita for the United States in 2021 (TWh per person)?",
+    "answer": 14071.848,
+    "answer_type": "float",
+    "unit": "TWh per capita",
+    "difficulty": "hard",
+    "comment": "Calculated as energy_per_capita - fossil_energy_per_capita; tricky question, several ways to calculate. Precision 3 decimal places.",
+    "sources": [
+      {
+        "source_name": "owid_energy_data",
+        "source_type": "db"
+      },
+      {
+        "source_name": "owid_co2_data",
+        "source_type": "db"
+      }
+    ]
+  },
+  "49": {
+    "question": "What is the absolute difference between the CO2 emissions per GDP of the United States and India in 2020?",
+    "answer": -0.009,
+    "answer_type": "float",
+    "unit": "tonnes",
+    "difficulty": "hard",
+    "comment": "Calculated as CO2 per gdp (US) - CO2 per gdp (India). Precision 3 decimal places.",
+    "sources": [
+      {
+        "source_name": "owid_co2_data",
+        "source_type": "db"
+      }
+    ]
+  },
+  "50": {
+    "question": "What was the difference of percentage share of solar electricity in total low-carbon electricity generation for Spain in 2021 compared to 2020?",
+    "answer": 2.043,
+    "answer_type": "float",
+    "unit": "%",
+    "difficulty": "hard",
+    "comment": "Calculated simply as solar_share_elec (2021) - solar_share_elec (2020); tricky question - use electricity, not energy. Precision 3 decimal places.",
+    "sources": [
+      {
+        "source_name": "owid_energy_data",
+        "source_type": "db"
+      }
+    ]
+  },
+  "51": {
+    "question": "What was the annual average biofuel consumption for Germany over the period 2012-2019?",
+    "answer": 32.123,
+    "answer_type": "float",
+    "unit": "TWh",
+    "difficulty": "hard",
+    "comment": "Calculated as the average of 'coal_consumption' for Germany from 6 available years between 2012 and 2018. Precision 3 decimal places.",
+    "sources": [
+      {
+        "source_name": "owid_energy_data",
+        "source_type": "db"
+      }
+    ]
+  },
+  "52": {
+    "question": "What was the annual average emissions per capita for Switzerland over the period 1970-1975 (in tonnes per capita)?",
+    "answer": 56.687,
+    "answer_type": "float",
+    "unit": "TWh",
+    "difficulty": "hard",
+    "comment": "Correct average calculation of the average of co2_per_capita. Precision 3 decimal places.",
+    "sources": [
+      {
+        "source_name": "owid_energy_data",
+        "source_type": "db"
+      }
+    ]
+  },
+  "53": {
+    "question": "What were the total global CO2 emissions from Gas in 2021?",
+    "answer": 7922.98,
+    "answer_type": "float",
+    "unit": "million tonnes",
+    "difficulty": "easy",
+    "comment": "Direct retrieval of 'gas_co2' for the 'World' entity in 2021. Precision 3 decimal places.",
+    "sources": [
+      {
+        "source_name": "owid_co2_data",
+        "source_type": "db"
+      }
+    ]
+  },
+  "54": {
+    "question": "What was the value of nuclear_electricity for France in 2000?",
+    "answer": 415.16,
+    "answer_type": "float",
+    "unit": "TWh",
+    "difficulty": "easy",
+    "comment": "Direct retrieval of column 'nuclear_electricity' for France in 2000.",
+    "sources": [
+      {
+        "source_name": "owid_energy_data",
+        "source_type": "db"
+      }
+    ]
+  },
+  "55": {
+    "question": "What were the total CO2 emissions from oil for United States in 1995?",
+    "answer": 2217.904,
+    "answer_type": "float",
+    "unit": "million tonnes",
+    "difficulty": "easy",
+    "comment": "Direct retrieval of column 'oil_co2' for United States in 1995.",
+    "sources": [
+      {
+        "source_name": "owid_co2_data",
+        "source_type": "db"
+      }
+    ]
+  },
+  "56": {
+    "question": "What was the CO2 per capita for South Africa in 2021?",
+    "answer": 6.925,
+    "answer_type": "float",
+    "unit": "tonnes",
+    "difficulty": "easy",
+    "comment": "Direct retrieval of column 'co2_per_capita' for South Africa in 2021.",
+    "sources": [
+      {
+        "source_name": "owid_co2_data",
+        "source_type": "db"
+      }
+    ]
+  },
+  "57": {
+    "question": "What was the total biofuel consumption for World in 2017?",
+    "answer": 957.891,
+    "answer_type": "float",
+    "unit": "TWh",
+    "difficulty": "easy",
+    "comment": "Direct retrieval of column 'biofuel_consumption' for World in 2017.",
+    "sources": [
+      {
+        "source_name": "owid_energy_data",
+        "source_type": "db"
+      }
+    ]
+  },
+  "58": {
+    "question": "What was the total electricity derived from gas for Canada in 2021?",
+    "answer": 82.34,
+    "answer_type": "float",
+    "unit": "TWh",
+    "difficulty": "easy",
+    "comment": "Direct retrieval of column 'gas_electricity' for Canada in 2021.",
+    "sources": [
+      {
+        "source_name": "owid_energy_data",
+        "source_type": "db"
+      }
+    ]
+  },
+  "59": {
+    "question": "What was the total dollar-denominated GDP for Argentina in 2015?",
+    "answer": 850356666368,
+    "answer_type": "int",
+    "unit": "US dollars",
+    "difficulty": "easy",
+    "comment": "Direct retrieval of column 'gdp' for Argentina in 2015.",
+    "sources": [
+      {
+        "source_name": "owid_co2_data",
+        "source_type": "db"
+      }
+    ]
+  },
+  "60": {
+    "question": "What was the total share of fossil energy (in percent) for Brazil in 1990?",
+    "answer": 56.326,
+    "answer_type": "float",
+    "unit": "%",
+    "difficulty": "easy",
+    "comment": "Direct retrieval of column 'fossil_share_energy' for Brazil in 1990.",
+    "sources": [
+      {
+        "source_name": "owid_energy_data",
+        "source_type": "db"
+      }
+    ]
+  },
+  "61": {
+    "question": "What were the methane emissions for Russia in 2016?",
+    "answer": 462.751,
+    "answer_type": "float",
+    "unit": "million tonnes",
+    "difficulty": "easy",
+    "comment": "Direct retrieval of column 'methane' for Russia in 2016.",
+    "sources": [
+      {
+        "source_name": "owid_co2_data",
+        "source_type": "db"
+      }
+    ]
+  },
+  "62": {
+    "question": "What was the absolute change in Coal CO2 emissions for Germany between 2011 and 2021?",
+    "answer": -107.475,
+    "answer_type": "float",
+    "unit": "million tonnes",
+    "difficulty": "medium",
+    "comment": "Calculated as coal_co2 (2021) - coal_co2 (2011).",
+    "sources": [
+      {
+        "source_name": "owid_co2_data",
+        "source_type": "db"
+      }
+    ]
+  },
+  "63": {
+    "question": "What was the ratio of global electricity generated with oil vs electricity generated with gas in 2015?",
+    "answer": 0.205,
+    "answer_type": "float",
+    "unit": "Ratio (Oil/Gas)",
+    "difficulty": "medium",
+    "comment": "Calculated as oil_electricity / gas_electricity for 'World'.",
+    "sources": [
+      {
+        "source_name": "owid_energy_data",
+        "source_type": "db"
+      }
+    ]
+  },
+  "64": {
+    "question": "What was the percentage change in CO2 per unit energy for the United States between 2000 and 2020?",
+    "answer": -15.487,
+    "answer_type": "float",
+    "unit": "%",
+    "difficulty": "medium",
+    "comment": "Percentage change in 'co2_per_unit_energy'; 100*(0.191 - 0.226) / 0.226",
+    "sources": [
+      {
+        "source_name": "owid_co2_data",
+        "source_type": "db"
+      }
+    ]
+  },
+  "65": {
+    "question": "What was the total renewable electricity generation (Wind, Solar, Hydro) for China in 2021?",
+    "answer": 2282.8,
+    "answer_type": "float",
+    "unit": "TWh",
+    "difficulty": "medium",
+    "comment": "Sum of 'wind_electricity', 'solar_electricity', and 'hydro_electricity'. 655.8 + 327 + 1300. ",
+    "sources": [
+      {
+        "source_name": "owid_energy_data",
+        "source_type": "db"
+      }
+    ]
+  },
+  "66": {
+    "question": "What is the absolute difference between the World's GDP and China's GDP in 2019, in nominal US dollars?",
+    "answer": 98517425061888000,
+    "answer_type": "float",
+    "unit": "US dollars",
+    "difficulty": "medium",
+    "comment": "World GDP - China GDP in 2019. Precision 0 decimal places.",
+    "sources": [
+      {
+        "source_name": "owid_co2_data",
+        "source_type": "db"
+      }
+    ]
+  },
+  "67": {
+    "question": "What was the total CO2 from Flaring for the United States, Canada, and Russia combined in 2020?",
+    "answer": 143.022,
+    "answer_type": "float",
+    "unit": "million tonnes",
+    "difficulty": "medium",
+    "comment": "Sum of 'flaring_co2' for the three countries. Precision - 3 decimals.",
+    "sources": [
+      {
+        "source_name": "owid_co2_data",
+        "source_type": "db"
+      }
+    ]
+  },
+  "68": {
+    "question": "What is the absolute difference in percentage points between Fossil Fuel Share of Energy and Coal Share of Energy for India in 2018?",
+    "answer": 36.403,
+    "answer_type": "float",
+    "unit": "percentage points",
+    "difficulty": "medium",
+    "comment": "Calculated as fossil_share_energy - coal_share_energy. Precision - 3 decimals.",
+    "sources": [
+      {
+        "source_name": "owid_energy_data",
+        "source_type": "db"
+      }
+    ]
+  },
+  "69": {
+    "question": "What percentage of the World's cumulative CO2 from cement was contributed by China up to 2021?",
+    "answer": 32.464,
+    "answer_type": "float",
+    "unit": "%",
+    "difficulty": "medium",
+    "comment": "Calculated as (China cumulative_cement_co2 / World cumulative_cement_co2) * 100.",
+    "sources": [
+      {
+        "source_name": "owid_co2_data",
+        "source_type": "db"
+      }
+    ]
+  },
+  "70": {
+    "question": "Calculate the ratio of Global Fossil Fuel Consumption (TWh) to Global Territorial CO2 Emissions (million tonnes) in 1980 versus 2020, and state the percentage change in this ratio.",
+    "answer": 2.135,
+    "answer_type": "float",
+    "unit": "% change",
+    "difficulty": "hard",
+    "comment": "Calculated as % change of (Fossil Consumption / CO2 Ratio) from 1980 to 2020. Cross-file calculation. =100*((130121.617/35126.527) - (70683.391/19488.523))/ (70683.391/19488.523)",
+    "sources": [
+      {
+        "source_name": "owid_energy_data",
+        "source_type": "db"
+      },
+      {
+        "source_name": "owid_co2_data",
+        "source_type": "db"
+      }
+    ]
+  },
+  "71": {
+    "question": "What was the Compound Annual Growth Rate (CAGR) of CO2 emissions per capita for India between 2000 and 2021 (in percentage points)?",
+    "answer": 3.448,
+    "answer_type": "float",
+    "unit": "%",
+    "difficulty": "hard",
+    "comment": "Calculated as CAGR over 21 years for 'co2_per_capita'.",
+    "sources": [
+      {
+        "source_name": "owid_co2_data",
+        "source_type": "db"
+      }
+    ]
+  },
+  "72": {
+    "question": "Calculate the ratio of Fossil Electricity to Low Carbon Electricity for Germany in 2000 and 2020, and state the absolute change in this ratio.",
+    "answer": -0.981,
+    "answer_type": "float",
+    "unit": "Absolute Change in Ratio",
+    "difficulty": "hard",
+    "comment": "Calculated as (Ratio 2020 - Ratio 2000), where Ratio = fossil_electricity / low_carbon_electricity. (250.88/315.87) - (363.93/205.02).",
+    "sources": [
+      {
+        "source_name": "owid_energy_data",
+        "source_type": "db"
+      }
+    ]
+  },
+  "73": {
+    "question": "What was the average annual oil production for Russia over the 21st Century (2000 to latest available date)?",
+    "answer": 5822.331,
+    "answer_type": "float",
+    "unit": "TWh",
+    "difficulty": "hard",
+    "comment": "Calculated as the mean of 'oil_production' for Russia over the period 2000-2024.",
+    "sources": [
+      {
+        "source_name": "owid_energy_data",
+        "source_type": "db"
+      }
+    ]
+  },
+  "74": {
+    "question": "What is the absolute difference between global Coal Consumption and global Gas Consumption in 2018?",
+    "answer": 5580.269,
+    "answer_type": "float",
+    "unit": "TWh",
+    "difficulty": "medium",
+    "comment": "Calculated as |Coal Consumption - Gas Consumption| for 'World' in 2018.",
+    "sources": [
+      {
+        "source_name": "owid_energy_data",
+        "source_type": "db"
+      }
+    ]
+  },
+  "75": {
+    "question": "Calculate the absolute change in percentage points of coal electricity's share in total electricity generation for India between 2005 and 2020.",
+    "answer": 4.387,
+    "answer_type": "float",
+    "unit": "percentage points",
+    "difficulty": "hard",
+    "comment": "Calculated as (Coal Share 2020 - Coal Share 2005). Coal Share = (coal_electricity / electricity_generation) * 100.",
+    "sources": [
+      {
+        "source_name": "owid_energy_data",
+        "source_type": "db"
+      }
+    ]
+  },
+  "76": {
+    "question": "Did the appeal of 8 May 2025 in Lliuya v RWE AG, where Lliuya complained that RWE's greenhouse gas emissions contributed to the risk of flooding to his home in Peru, go in his favour?",
+    "answer": false,
+    "answer_type": "bool",
+    "unit": "boolean",
+    "difficulty": "medium",
+    "comment": "Mentioned in intro of Lliuya v RWE AG",
+    "sources": [
+      {
+        "source_name": "Lliuya v RWE AG",
+        "source_type": "wikipedia"
+      }
+    ]
+  },
+  "77": {
+    "question": "According to scientists, around how many people died as a result of climate change over the European heat wave of summer 2025?",
+    "answer": 16500,
+    "answer_type": "int",
+    "unit": "people",
+    "difficulty": "medium",
+    "comment": "Mentioned in intro of Wikipedia article 2025 European heat waves",
+    "sources": [
+      {
+        "source_name": "2025 European heat waves",
+        "source_type": "wikipedia"
+      }
+    ]
+  },
+  "78": {
+    "question": "Which river suffered extreme flooding in the May 2025 Mid-Atlantic United States flood? Give the full name as 'X river' ",
+    "answer": "Potomac River",
+    "answer_type": "string",
+    "unit": "river name",
+    "difficulty": "medium",
+    "comment": "Mentioned in intro of Wikipedia article May 2025 Mid-Atlantic United States flood",
+    "sources": [
+      {
+        "source_name": "May 2025 Mid-Atlantic United States flood",
+        "source_type": "wikipedia"
+      }
+    ]
+  },
+  "79": {
+    "question": "What was the temperature record in the 2025 European heat waves, in degrees Celsius?",
+    "answer": 46.6,
+    "answer_type": "float",
+    "unit": "degrees Celsius",
+    "difficulty": "medium",
+    "comment": "Mentioned in section 'Portugal' ",
+    "sources": [
+      {
+        "source_name": "2025 European heat waves",
+        "source_type": "wikipedia"
+      }
+    ]
+  },
+  "80": {
+    "question": "In which month did India and Pakistan's record-breaking 2025 heat wave start?",
+    "answer": "April",
+    "answer_type": "string",
+    "unit": "month",
+    "difficulty": "medium",
+    "comment": "Mentioned in intro of Wikipedia article 2025 India-Pakistan heat wave",
+    "sources": [
+      {
+        "source_name": "2025 India-Pakistan heat wave",
+        "source_type": "wikipedia"
+      }
+    ]
+  },
+  "81": {
+    "question": "What percentage of the United Kingdom's total greenhouse gas emissions including LULUCF in 2023 do GSK's global Scope 1 emissions represent? Provide the answer rounded to four decimal places.",
+    "answer": 0.1481,
+    "answer_type": "float",
+    "unit": "percent",
+    "difficulty": "hard",
+    "comment": "Cross-source calculation combining PDF and database data: GSK's Scope 1 emissions (0.581 million tonnes CO2e from GSK ESG report) divided by UK's total GHG emissions (392.245 million tonnes from database) * 100 = 0.1481%. This compares a UK-based pharmaceutical company's direct operational emissions to the entire country's total greenhouse gas emissions.",
+    "sources": [
+      {
+        "source_name": "GSK_esg-performance-report_2023.pdf",
+        "source_type": "pdf",
+        "page_number": 23
+      },
+      {
+        "source_name": "owid_co2_data",
+        "source_type": "database",
+        "page_number": null
+      }
+    ]
+  },
+  "82": {
+    "question": "If GSK, Swisscom, and Erste Bank were all Swiss companies, what percentage of Switzerland's 2023 total GHG emissions would their combined Scope 1 emissions represent? Provide the answer rounded to four decimal places.",
+    "answer": 1.5236,
+    "answer_type": "float",
+    "unit": "percent",
+    "difficulty": "extreme",
+    "comment": "Strategic cross-source scenario analysis: Combined company Scope 1 emissions (0.61027 million tonnes from three PDFs) divided by Switzerland's total GHG (40.055 million tonnes from database) * 100 = 1.5236%. This hypothetical shows that three major corporations would account for 1.5% of a small country's emissions - relevant for national climate policy and corporate responsibility discussions.",
+    "sources": [
+      {
+        "source_name": "GSK_esg-performance-report_2023.pdf",
+        "source_type": "pdf",
+        "page_number": 23
+      },
+      {
+        "source_name": "swisscom_sustainability_impact_report_2024_en.pdf",
+        "source_type": "pdf",
+        "page_number": 30
+      },
+      {
+        "source_name": "Erste_Group_2024.pdf",
+        "source_type": "pdf",
+        "page_number": 264
+      },
+      {
+        "source_name": "owid_co2_data",
+        "source_type": "database",
+        "page_number": null
+      }
+    ]
+  },
+  "83": {
+    "question": "If RWE's 2024 capex on property, plant and equipment and intangible assets (9377 million) is allocated proportionally across the combined Scope 1 emissions of GSK (2023), Swisscom (2023), Erste Bank (2024), and Shell's 2024 operational Scope 1 and 2 emissions, how many million EUR of that capex would correspond to Shell's emissions? Provide the answer rounded to three decimal places.",
+    "answer": 5883.985,
+    "answer_type": "float",
+    "unit": "million EUR",
+    "difficulty": "extreme",
+    "comment": "Allocation blend: Total capex of 9377 million (page 50) is distributed across the combined emissions set (GSK 0.581 million tonnes, Swisscom 12,467 tonnes, Erste 16,803 tonnes, Shell 1,028 thousand tonnes). Shell's share of the total emissions is 1,028,000 tonnes, producing a capex allocation of 5883.985 million (rounded to three decimals).",
+    "sources": [
+      {
+        "source_name": "2025-03-20-rwe-annual-report-2024.pdf",
+        "source_type": "pdf",
+        "page_number": 50
+      },
+      {
+        "source_name": "GSK_esg-performance-report_2023.pdf",
+        "source_type": "pdf",
+        "page_number": 23
+      },
+      {
+        "source_name": "swisscom_sustainability_impact_report_2024_en.pdf",
+        "source_type": "pdf",
+        "page_number": 30
+      },
+      {
+        "source_name": "Erste_Group_2024.pdf",
+        "source_type": "pdf",
+        "page_number": 264
+      },
+      {
+        "source_name": "shell-annual-report-2024.pdf",
+        "source_type": "pdf",
+        "page_number": 18
+      }
+    ]
+  }
+}

@@ -1,0 +1,14 @@
+[project]
+name = "hackathon-oct-2025"
+version = "0.1.0"
+description = "Official repository for the AIM Hackathon October 2025: Agentic AI  for sustainability questions"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "anthropic>=0.68.0",
+    "dotenv>=0.9.9",
+    "mcp>=1.14.1",
+    "pymssql>=2.2.0",
+    "pandas>=2.3.2",
+    "wikipedia-mcp>=1.6.0",
+]

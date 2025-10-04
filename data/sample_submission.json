@@ -1,0 +1,22 @@
+{
+  "team_name": "test-team",
+  "answers": {
+    "1": {
+      "question": "How many easter eggs did Erste Group hide in their 2024 annual report?",
+      "answer": 42,
+      "sources": [
+        {
+          "source_name": "Erste_Group_2024.pdf",
+          "source_type": "PDF",
+          "page_number": 123
+        }
+      ]
+    },
+    "2": {
+      "question": "Did Erste Group report include any jokes to keep readers entertained?",
+      "answer": false,
+      "sources": null
+    }
+  }
+}
+

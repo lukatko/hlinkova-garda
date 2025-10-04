@@ -1,0 +1,60 @@
+{
+  "data": [
+    {
+      "type": "model",
+      "id": "claude-sonnet-4-5-20250929",
+      "display_name": "Claude Sonnet 4.5",
+      "created_at": "2025-09-29T00:00:00Z",
+      "USD_per_million_input_tokens": 3,
+      "USD_per_million_output_tokens": 15
+    },
+    {
+      "type": "model",
+      "id": "claude-opus-4-1-20250805",
+      "display_name": "Claude Opus 4.1",
+      "created_at": "2025-08-05T00:00:00Z",
+      "USD_per_million_input_tokens": 15,
+      "USD_per_million_output_tokens": 75
+    },
+    {
+      "type": "model",
+      "id": "claude-opus-4-20250514",
+      "display_name": "Claude Opus 4",
+      "created_at": "2025-05-22T00:00:00Z",
+      "USD_per_million_input_tokens": 15,
+      "USD_per_million_output_tokens": 75
+    },
+    {
+      "type": "model",
+      "id": "claude-sonnet-4-20250514",
+      "display_name": "Claude Sonnet 4",
+      "created_at": "2025-05-22T00:00:00Z",
+      "USD_per_million_input_tokens": 3,
+      "USD_per_million_output_tokens": 15
+    },
+    {
+      "type": "model",
+      "id": "claude-3-7-sonnet-20250219",
+      "display_name": "Claude Sonnet 3.7",
+      "created_at": "2025-02-24T00:00:00Z",
+      "USD_per_million_input_tokens": 3,
+      "USD_per_million_output_tokens": 15
+    },
+    {
+      "type": "model",
+      "id": "claude-3-5-haiku-20241022",
+      "display_name": "Claude Haiku 3.5",
+      "created_at": "2024-10-22T00:00:00Z",
+      "USD_per_million_input_tokens": 0.8,
+      "USD_per_million_output_tokens": 4
+    },
+    {
+      "type": "model",
+      "id": "claude-3-haiku-20240307",
+      "display_name": "Claude Haiku 3",
+      "created_at": "2024-03-07T00:00:00Z",
+      "USD_per_million_input_tokens": 0.25,
+      "USD_per_million_output_tokens": 1.25
+    }
+  ]
+}
