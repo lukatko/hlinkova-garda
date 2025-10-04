@@ -341,6 +341,7 @@ Guidelines:
 - Show calculations if you derived a result.
 - Do not hallucinate data (e.g., no "Scope 5 emissions").
 - If information is missing in all tools, clearly state that.
+- Do not round numbers at any steps.
 
 Sources format (when available):
 - For PDF files: {{"source_name": "filename.pdf", "source_type": "pdf", "page_number": 123}}
