@@ -149,34 +149,6 @@ class Agent:
 
         self.tools = self.wikipedia_tools + self.database_tools + self.currency_tools + self.math_tools
         
-        # Fetch database schema once during initialization
-        print("DEBUG: Fetching database schema once during initialization...")
-        try:
-            # Use the imported get_tables function directly
-            table_names = get_tables()
-            print(f"DEBUG: Found tables: {table_names}")
-            
-            if table_names and not (len(table_names) == 1 and "Error" in str(table_names[0])):
-                self.database_schema_info = "\n\nAVAILABLE DATABASE TABLES AND SCHEMAS:\n"
-                self.database_schema_info += "=" * 60 + "\n"
-                
-                for table_name in table_names:
-                    print(f"DEBUG: Getting schema for table: {table_name}")
-                    
-                    # Use the imported get_schema function directly
-                    schema_text = get_schema(table_name)
-                    
-                    self.database_schema_info += f"\n{schema_text}\n"
-                    self.database_schema_info += "-" * 40 + "\n"
-                
-                self.database_schema_info += "\n" + "=" * 60 + "\n"
-                print(f"DEBUG: Database schema info prepared once, length: {len(self.database_schema_info)} chars")
-            else:
-                print("DEBUG: No tables found or error getting tables")
-                self.database_schema_info = "\nDatabase schema information unavailable.\n"
-        except Exception as e:
-            print(f"DEBUG: Error getting database schema during initialization: {e}")
-            self.database_schema_info = "\nDatabase schema information unavailable due to error.\n"
 
     async def answer_question(self, question: str) -> str:
         """
@@ -204,7 +176,7 @@ You have access to:
 - Currency conversion tools for converting between different currencies
 - Calculate tool for mathematical operations (addition, subtraction, multiplication, division, percentages, etc.)
 
-{self.database_schema_info}
+If you see 2025 in the question look in the wikipedia first.
 
 ANSWER FORMAT REQUIREMENTS:
 Your answer must be in the EXACT format shown below. Do not include explanations, sources, or additional text.
@@ -215,30 +187,6 @@ Expected answer format examples:
 - For booleans: true or false (not "yes" or "no")  
 - For strings: "Potomac River" (include quotes for string answers)
 - For null answers: null (when information is not available)
-
-Important guidelines:
-1. Always cite your sources in your response
-2. Use specific tool calls to gather information
-3. For numerical data, provide precise values when possible
-4. If you need to convert currencies, use the currency conversion tool
-5. If a question requires calculations, show your work
-6. If information is not available, clearly state that
-
-
-Important workflow for Wikipedia:
-1. Start with the **Wikipedia search tool** to find candidate pages.
-2. Use the **Wikipedia page content tool** to extract information.
-3. If Wikipedia only contains **partial information**:
-   - Supplement it with **Database tools** (for numerical values like emissions, GDP, etc.).
-   - Use **Currency tools** when conversions are needed.
-   - Use your own reasoning to combine results.
-4. Always **combine sources** into a single, clear answer.
-5. Explicitly list **all sources you used** in the final JSON:
-   - Wikipedia → `"source_type": "wikipedia"`, `"source_name": "<page title>"`.
-   - Database → `"source_type": "database"`, `"source_name": "owid_co2_data"`.
-   - Currency → `"source_type": "internal"`, `"source_name": "currency_rates.json"`.
-   - If a tool cannot find data, clearly say so instead of guessing.
-
 
 - If multiple tools were used, include all sources in the list.
 - If no sources are available, set `"sources": null`.
@@ -278,6 +226,7 @@ CRITICAL:
             response = self.anthropic.messages.create(
                 model="claude-3-5-haiku-20241022",  # Using fastest/cheapest model for hackathon
                 max_tokens=4000,
+                temperature=0.0,  # Low temperature for more consistent, factual answers
                 messages=messages,
                 tools=self.tools
             )
