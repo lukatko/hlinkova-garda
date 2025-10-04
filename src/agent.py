@@ -80,6 +80,7 @@ class Agent:
         
         # Initialize database schema info once
         self.database_schema_info = ""
+        self.vector_db_tools = []
 
         # Initialise the Wikipedia MCP server
         try:
@@ -147,7 +148,6 @@ class Agent:
                     pass
             self.currency_client = None
 
-        self.tools = self.wikipedia_tools + self.database_tools + self.currency_tools + self.math_tools
         
 
     async def answer_question(self, question: str) -> str:
@@ -304,6 +304,9 @@ CRITICAL:
             # Handle built-in math tool
             if tool_name == "calculate":
                 return self.calculate(tool_input.get("expression", ""))
+        elif any(tool["name"] == tool_name for tool in self.vector_db_tools):
+            if self.vector_db_client:
+                return await self.vector_db_client.call_tool(tool_name, tool_input)
         
         raise Exception(f"Tool {tool_name} not found in any available clients")
 
@@ -358,6 +361,14 @@ async def main(verbose: bool = True):
                 print(f"Warning: Error cleaning up Currency client: {e}")
             finally:
                 agent.currency_client = None
+
+        if hasattr(agent, 'vector_db_client') and agent.vector_db_client is not None:
+            try:
+                await agent.vector_db_client.cleanup()
+            except Exception as e:
+                print(f"Warning: Error cleaning up Vector DB client: {e}")
+            finally:
+                agent.vector_db_client = None
     
     # Save answers in the required JSON format
     output_file = get_root_dir() / 'submission.json'
