@@ -107,7 +107,11 @@ class Agent:
         messages = [
             {
                 "role": "user",
-                "content": f"""Answer this question using the available tools: {question}
+                "content": f"""Answer this question using the available tools: {question['question']},
+                the answer MUST be only one piece of information (the name, boolean, the specific number) 
+                having type {question['answer_type']} and answer having unit {question['unit']}.
+                Always answer the following question exactly. Do not omit, change, or rephrase the question in your final answer. Your answer must directly correspond to this question.
+
 
 You have access to:
 - Wikipedia tools for general knowledge and current events
@@ -120,7 +124,39 @@ Important guidelines:
 3. For numerical data, provide precise values when possible
 4. If you need to convert currencies, use the currency conversion tool
 5. If a question requires calculations, show your work
-6. If information is not available, clearly state that"""
+6. If information is not available, clearly state that
+
+
+Important workflow for Wikipedia:
+1. Start with the **Wikipedia search tool** to find candidate pages.
+2. Use the **Wikipedia page content tool** to extract information.
+3. If Wikipedia only contains **partial information**:
+   - Supplement it with **Database tools** (for numerical values like emissions, GDP, etc.).
+   - Use **Currency tools** when conversions are needed.
+   - Use your own reasoning to combine results.
+4. Always **combine sources** into a single, clear answer.
+5. Explicitly list **all sources you used** in the final JSON:
+   - Wikipedia → `"source_type": "wikipedia"`, `"source_name": "<page title>"`.
+   - Database → `"source_type": "database"`, `"source_name": "owid_co2_data"`.
+   - Currency → `"source_type": "internal"`, `"source_name": "currency_rates.json"`.
+   - If a tool cannot find data, clearly say so instead of guessing.
+
+Formatting rules for sources:
+- Each source must be a dictionary:
+  {{
+    "source_name": "Erste Group",
+    "source_type": "wikipedia",
+    "page_number": null
+  }}
+- If multiple tools were used, include all sources in the list.
+- If no sources are available, set `"sources": null`.
+
+Guidelines:
+- Provide precise values when possible.
+- Show calculations if you derived a result.
+- Do not hallucinate data (e.g., no "Scope 5 emissions").
+- If information is missing in all tools, clearly state that.
+"""
             }
         ]
 
@@ -210,7 +246,7 @@ async def main(verbose: bool = True):
         questions_data = json.load(f)
     
     # Extract just the question text from the data structure
-    questions = [questions_data[str(i)]["question"] for i in range(1, len(questions_data) + 1)]
+    questions = [questions_data[str(i)] for i in range(76, len(questions_data) + 1)]
     
     answers = []
     try:
