@@ -310,21 +310,20 @@ class Agent:
                 "content": f"""Answer this question using the available tools: {question['question']},
 
 
-You have access to:
-- Wikipedia tools for general knowledge and current events
+You have access to (BUT always use ONE tool one from these following three):
+- Wikipedia tools for general knowledge and current events (2025)
 - Database tools for querying CO2, energy, and emissions data from Our World in Data
   * get_tables: Lists all available tables in the database
   * get_schema: Shows the structure/columns of a specific table  
   * query_database: Execute SQL queries on the database
-- Currency conversion tools for converting between different currencies
-- Calculate tool for mathematical operations (addition, subtraction, multiplication, division, percentages, etc.)
 - Vector search tool for searching through PDF documents including annual reports and sustainability reports of Erste Group, GSK and Swisscom
 
-ALWAYS look for the data in all three sources - database, wikipedia and vector database.
+Feel free to use these as much as needed:
+- Currency conversion tools for converting between different currencies
+- Calculate tool for mathematical operations (addition, subtraction, multiplication, division, percentages, etc.)
 
 ANSWER FORMAT REQUIREMENTS:
 Your answer must be in the EXACT format shown below with data type {question['answer_type']} in units {question['unit']}. Do not include explanations, or additional text.
-Just provide the raw answer value that matches the expected data type.
 
 Expected answer format examples:
 - For numbers: 42 or 42.5 or 412880.659 (not "42" or "42 million")
@@ -338,9 +337,7 @@ Expected answer format examples:
 
 Guidelines:
 - Provide precise values when possible.
-- Show calculations if you derived a result.
 - Do not hallucinate data (e.g., no "Scope 5 emissions").
-- If information is missing in all tools, clearly state that.
 - Do not round numbers at any steps.
 
 Sources format (when available):
@@ -355,10 +352,9 @@ CRITICAL:
 2. THEN call get_schema for the relevant table to see exact column names
 3. FINALLY call query_database with the correct table and column names
 4. DO NOT guess or make up table names - always use get_tables and get_schema first
-- Use the exact table and column names shown in the schemas above
 - For numerical answers, provide precise values without units or explanations
 - If information is not available, return null
-- Do NOT include explanatory text in your final answer
+- Stick STRICTLY to the format below:
 
 EXAMPLE:
 "1": {{
