@@ -4,10 +4,15 @@ import os
 import sys
 from pathlib import Path
 import PyPDF2
-from sentence_transformers import SentenceTransformer
+from openai import OpenAI
+from dotenv import load_dotenv
 import chromadb
 from chromadb.utils import embedding_functions
 import numpy as np
+
+load_dotenv()
+
+AZURE_API_KEY = os.getenv("AZURE_API_KEY")
 
 
 # Config
@@ -43,12 +48,20 @@ for pdf_file in PDF_FILES:
 
 print(f"Total chunks: {len(all_chunks)}")
 
-# Build embeddings
-model = SentenceTransformer("all-MiniLM-L6-v2")
+# Initialize Azure OpenAI client
+endpoint = "https://aim-azure-ai-foundry.cognitiveservices.azure.com/openai/v1/"
+deployment_name = "text-embedding-model"
+api_key = AZURE_API_KEY
+
+openai_client = OpenAI(
+    base_url=endpoint,
+    api_key=api_key,
+)
+
 # Initialize Chroma client with persistent storage
-client = chromadb.PersistentClient(path="./chroma_db")
+chroma_client = chromadb.PersistentClient(path="./chroma_db")
 # Get or create collection
-collection = client.get_or_create_collection("pdf_chunks")
+collection = chroma_client.get_or_create_collection("pdf_chunks")
 print(f"ChromaDB data will be stored in: {os.path.abspath('./chroma_db')}")
 
 # ----------------------------
@@ -58,8 +71,12 @@ print("Starting to add chunks to ChromaDB...")
 
 for i, c in enumerate(all_chunks):
     try:
-        # Generate embedding directly with the model
-        embedding = model.encode(c["text"]).tolist()  # Convert numpy array to list
+        # Generate embedding using Azure OpenAI
+        response = openai_client.embeddings.create(
+            input=c["text"],
+            model=deployment_name
+        )
+        embedding = response.data[0].embedding
         
         # Add to collection
         collection.add(

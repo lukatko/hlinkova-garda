@@ -94,16 +94,25 @@ class Agent:
 
     def search_pdf_documents(self, query: str, top_k: int = 5) -> dict:
         """
-        Search through PDF documents using hybrid ChromaDB vector + text matching.
+        Search through PDF documents using Azure OpenAI embeddings and ChromaDB.
         """
         try:
             import chromadb
-            from sentence_transformers import SentenceTransformer
+            from openai import OpenAI
             
-            # Initialize
+            # Initialize Azure OpenAI client
+            endpoint = "https://aim-azure-ai-foundry.cognitiveservices.azure.com/openai/v1/"
+            deployment_name = "text-embedding-model"
+            api_key = os.getenv("AZURE_API_KEY")
+            
+            openai_client = OpenAI(
+                base_url=endpoint,
+                api_key=api_key,
+            )
+            
+            # Initialize ChromaDB
             client = chromadb.PersistentClient(path="./chroma_db")
             collection = client.get_collection("pdf_chunks")
-            model = SentenceTransformer("all-MiniLM-L6-v2")
             
             print(f"DEBUG: Searching PDF documents for: {query}")
             
@@ -111,8 +120,14 @@ class Agent:
             top_k = min(top_k, 15)
             search_k = min(top_k * 3, 50)
             
-            # First: Standard semantic search
-            query_embedding = model.encode(query).tolist()
+            # Generate embedding using Azure OpenAI
+            response = openai_client.embeddings.create(
+                input=query,
+                model=deployment_name
+            )
+            query_embedding = response.data[0].embedding
+            
+            # Search in ChromaDB
             results_data = collection.query(
                 query_embeddings=[query_embedding],
                 n_results=search_k

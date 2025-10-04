@@ -1,16 +1,20 @@
 """
-MCP server for vector database queries using ChromaDB and sentence transformers.
+MCP server for vector database queries using ChromaDB and Azure OpenAI embeddings.
 Assumes the ChromaDB collection and chunks are already prepared.
 """
 
 import json
 import chromadb
 import numpy as np
-from sentence_transformers import SentenceTransformer
+from openai import OpenAI
+from dotenv import load_dotenv
 from mcp.server.fastmcp import FastMCP
 from src.util.utils import get_root_dir
 import os
 from typing import List, Dict, Any
+
+load_dotenv()
+AZURE_API_KEY = os.getenv("AZURE_API_KEY")
 
 # Initialize MCP server
 mcp = FastMCP("Vector_Database")
@@ -19,13 +23,14 @@ mcp = FastMCP("Vector_Database")
 CHROMA_DB_PATH = "./chroma_db"
 COLLECTION_NAME = "pdf_chunks"
 CHUNKS_FILE = "chunks.json"
-MODEL_NAME = "all-MiniLM-L6-v2"
+AZURE_ENDPOINT = "https://aim-azure-ai-foundry.cognitiveservices.azure.com/openai/v1/"
+DEPLOYMENT_NAME = "text-embedding-model"
 
 # Global variables for lazy loading
 _client = None
 _collection = None
 _chunks = None
-_model = None
+_openai_client = None
 
 def _get_client():
     """Lazy load ChromaDB client"""
@@ -59,12 +64,15 @@ def _get_chunks():
             _chunks = json.load(f)
     return _chunks
 
-def _get_model():
-    """Lazy load sentence transformer model"""
-    global _model
-    if _model is None:
-        _model = SentenceTransformer(MODEL_NAME)
-    return _model
+def _get_openai_client():
+    """Lazy load Azure OpenAI client"""
+    global _openai_client
+    if _openai_client is None:
+        _openai_client = OpenAI(
+            base_url=AZURE_ENDPOINT,
+            api_key=AZURE_API_KEY,
+        )
+    return _openai_client
 
 @mcp.tool()
 def search_documents(query: str, top_k: int = 5) -> List[Dict[str, Any]]:
@@ -84,10 +92,14 @@ def search_documents(query: str, top_k: int = 5) -> List[Dict[str, Any]]:
     try:
         # Get components
         collection = _get_collection()
-        model = _get_model()
+        openai_client = _get_openai_client()
         
-        # Encode query
-        query_embedding = model.encode(query).tolist()
+        # Generate embedding using Azure OpenAI
+        response = openai_client.embeddings.create(
+            input=query,
+            model=DEPLOYMENT_NAME
+        )
+        query_embedding = response.data[0].embedding
         
         # Search in ChromaDB collection
         results_data = collection.query(
@@ -153,7 +165,7 @@ def query_with_context(question: str, top_k: int = 5) -> Dict[str, Any]:
             "documents_referenced": list(documents_used),
             "search_metadata": {
                 "top_k_used": top_k,
-                "model_used": MODEL_NAME
+                "model_used": DEPLOYMENT_NAME
             }
         }
         
@@ -173,7 +185,8 @@ def get_vector_db_status() -> Dict[str, Any]:
             "chroma_db_path": CHROMA_DB_PATH,
             "collection_name": COLLECTION_NAME,
             "chunks_file": CHUNKS_FILE,
-            "model_name": MODEL_NAME
+            "model_name": DEPLOYMENT_NAME,
+            "azure_endpoint": AZURE_ENDPOINT
         }
         
         # Check if files exist
