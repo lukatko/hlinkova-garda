@@ -1,0 +1,90 @@
+{
+  "team_name": "hlinkova garda",
+  "answers": {
+    "1": {
+      "question": "What was the value of total assets of Erste Bank in million USD in 2024, rounded to three decimal places?",
+      "answer": 412880.659,
+      "sources": [
+        {
+          "source_name": "Erste_Group_2024.pdf",
+          "source_type": "pdf",
+          "page_number": 3
+        },
+        {
+          "source_name": "currency_rates.json",
+          "source_type": "internal",
+          "page_number": null
+        }
+      ]
+    },
+    "2": {
+      "question": "How many human rights incidents happened at Erste Bank in 2024?",
+      "answer": 0,
+      "sources": [
+        {
+          "source_name": "Erste_Group_2024.pdf",
+          "source_type": "pdf",
+          "page_number": 295
+        }
+      ]
+    },
+    "3": {
+      "question": "How many tonnes scope 5 greenhouse gas emissions did Erste Bank emit 2024?",
+      "answer": "null",
+      "sources": [
+        {
+          "source_name": "Erste_Group_2024.pdf",
+          "source_type": "pdf",
+          "page_number": 265
+        },
+        {
+          "source_name": "Carbon footprint",
+          "source_type": "wikipedia",
+          "page_number": null
+        }
+      ]
+    },
+    "4": {
+      "question": "Given the turnover and scope 1 greenhouse gas emissions, what is the carbon intensity of Erste Bank in 2024 in tCO2eq per million Euros?",
+      "answer": 222.0,
+      "sources": [
+        {
+          "source_name": "Erste_Group_2024.pdf",
+          "source_type": "pdf",
+          "page_number": 271
+        }
+      ]
+    },
+    "5": {
+      "question": "What were the annual CO2 emissions in tonnes for Austria in 2000?",
+      "answer": "null",
+      "sources": null
+    },
+    "6": {
+      "question": "What were the annual total greenhouse gas emissions in tonnes for Austria in 1923?",
+      "answer": "null",
+      "sources": null
+    },
+    "7": {
+      "question": "What were the annual CO2 emissions in tonnes for Atlantis in 2023?",
+      "answer": "null",
+      "sources": null
+    },
+    "8": {
+      "question": "By how many percent did the total greenhouse gas emissions change from the year 1923 to 2023 in Austria?",
+      "answer": "null",
+      "sources": null
+    },
+    "9": {
+      "question": "What was the total number of accidents reported by Erste Group in 2024?",
+      "answer": 231,
+      "sources": [
+        {
+          "source_name": "Erste_Group_2024.pdf",
+          "source_type": "pdf",
+          "page_number": 293
+        }
+      ]
+    }
+  }
+}

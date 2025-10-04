@@ -292,8 +292,9 @@ You have access to:
 - Database tools for querying CO2, energy, and emissions data from Our World in Data - Please use the resource to check the available tables and schemas
 - Currency conversion tools for converting between different currencies
 - Calculate tool for mathematical operations (addition, subtraction, multiplication, division, percentages, etc.)
+- Vector search tool for searching through PDF documents including annual reports and sustainability reports of Erste Group, GSK and Swisscom
 
-If you see 2025 in the question look in the wikipedia first.
+ALWAYS look for the data in all three sources - database, wikipedia and vector database.
 
 ANSWER FORMAT REQUIREMENTS:
 Your answer must be in the EXACT format shown below with data type {question['answer_type']} in units {question['unit']}. Do not include explanations, or additional text.
@@ -307,6 +308,7 @@ Expected answer format examples:
 
 - If multiple tools were used, include all sources in the list.
 - If no sources are available, set `"sources": null`.
+- If the answer is null, set `"sources": null`.
 
 Guidelines:
 - Provide precise values when possible.
@@ -318,6 +320,7 @@ Sources format (when available):
 - For PDF files: {{"source_name": "filename.pdf", "source_type": "pdf", "page_number": 123}}
 - For Wikipedia: {{"source_name": "Article Title", "source_type": "wikipedia", "page_number": null}}
 - For database: {{"source_name": "table_name", "source_type": "database", "page_number": null}}
+- For currency conversion: {{"source_name": "currency_rates.json", "source_type": "internal", "page_number": null}}
 - When no sources: null
 
 CRITICAL: 
@@ -517,16 +520,59 @@ async def main(verbose: bool = True):
     # Save answers in the required JSON format
     output_file = get_root_dir() / 'submission.json'
     submission = {
-        "team_name": "hackathon_team",  # TODO: change this to your team name
+        "team_name": "hlinkova garda",
         "answers": {}
     }
     
     for i, answer in enumerate(answers, 1):
+        import re
+        import json as json_parser
+        # Extract content after : and before first comma using regex
+        match = re.search(r'"answer": (.*?),', answer) if answer else None
+        ans_final = match.group(1).strip() if match else answer
+        
+        # Convert ans_final to the correct type based on answer_type
+        question = questions[i-1]
+        answer_type = question.get('answer_type', 'string')
+        
+        if ans_final and ans_final != answer:
+            # Remove quotes if present
+            if ans_final.startswith('"') and ans_final.endswith('"'):
+                ans_final = ans_final[1:-1]
+            
+            # Convert based on answer_type
+            try:
+                if answer_type == 'number' or answer_type == 'float':
+                    ans_final = round(float(ans_final), 3)
+                elif answer_type == 'integer' or answer_type == 'int':
+                    ans_final = int(float(ans_final))  # Handle decimals that should be ints
+                elif answer_type == 'boolean' or answer_type == 'bool':
+                    ans_final = ans_final.lower() in ('true', '1', 'yes')
+                elif answer_type == 'string' or answer_type == 'str':
+                    ans_final = str(ans_final)
+                elif ans_final.lower() == 'null':
+                    ans_final = None
+            except (ValueError, TypeError):
+                # If conversion fails, keep as string
+                pass
+        
+        # Extract sources - expect list or null at the end
+        sources_match = re.search(r'"sources": ((?:\[.*?\]|null))(?:\s*\})?', answer, re.DOTALL) if answer else None
+        sources_final = []
+        if sources_match:
+            sources_text = sources_match.group(1).strip()
+            try:
+                # Try to parse as JSON (handles both lists and null)
+                sources_final = json_parser.loads(sources_text)
+            except:
+                # If parsing fails, keep as empty list
+                sources_final = []
+        
         if answer is not None:
             submission["answers"][str(i)] = {
-                "question": questions[i-1],
-                "answer": answer,
-                "sources": []  # TODO: extract sources from the answer if possible
+                "question": questions[i-1]['question'],
+                "answer": ans_final,
+                "sources": sources_final
             }
     
     with open(output_file, 'w') as f:
