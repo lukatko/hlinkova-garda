@@ -158,8 +158,6 @@ class Agent:
         """
         print(f"DEBUG: Starting to answer question: {question}")
         
-        # Use pre-fetched database schema info
-        print(f"DEBUG: Using pre-fetched database schema info, length: {len(self.database_schema_info)} chars")
 
         messages = [
             {
@@ -172,7 +170,7 @@ class Agent:
 
 You have access to:
 - Wikipedia tools for general knowledge and current events
-- Database tools for querying CO2, energy, and emissions data from Our World in Data
+- Database tools for querying CO2, energy, and emissions data from Our World in Data - Please use the resource to check the available tables and schemas
 - Currency conversion tools for converting between different currencies
 - Calculate tool for mathematical operations (addition, subtraction, multiplication, division, percentages, etc.)
 
@@ -225,7 +223,7 @@ CRITICAL:
             print("DEBUG: Calling Claude API...")
             response = self.anthropic.messages.create(
                 model="claude-3-5-haiku-20241022",  # Using fastest/cheapest model for hackathon
-                max_tokens=4000,
+                max_tokens=8000,
                 temperature=0.0,  # Low temperature for more consistent, factual answers
                 messages=messages,
                 tools=self.tools
