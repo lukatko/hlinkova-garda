@@ -60,7 +60,30 @@ class Agent:
                 "required": ["query"]
             }
         }]
-    
+     
+        # Add built-in database schema tools
+        self.database_schema_tools = [{
+            "name": "get_tables",
+            "description": "Get the list of all available tables in the SQL Server database. Use this FIRST before querying to know what tables exist.",
+            "input_schema": {
+                "type": "object",
+                "properties": {},
+                "required": []
+            }
+        }, {
+            "name": "get_schema", 
+            "description": "Get the schema/structure of a specific table including column names, data types, and constraints. Use this to know the exact column names before writing SQL queries.",
+            "input_schema": {
+                "type": "object",
+                "properties": {
+                    "table_name": {
+                        "type": "string",
+                        "description": "Name of the table to get schema for (e.g., 'owid_co2_data')"
+                    }
+                },
+                "required": ["table_name"]
+            }
+        }]
     def calculate(self, expression: str) -> dict:
         """
         Safely execute Python mathematical expressions.
@@ -270,7 +293,7 @@ class Agent:
                     pass
             self.vector_db_client = None
 
-        self.tools = self.wikipedia_tools + self.database_tools + self.currency_tools + self.math_tools + self.vector_db_tools + self.vector_search_tools
+        self.tools = self.wikipedia_tools + self.database_tools + self.currency_tools + self.math_tools + self.vector_db_tools + self.vector_search_tools + self.database_schema_tools
 
     async def answer_question(self, question: str) -> str:
         """
@@ -289,7 +312,10 @@ class Agent:
 
 You have access to:
 - Wikipedia tools for general knowledge and current events
-- Database tools for querying CO2, energy, and emissions data from Our World in Data - Please use the resource to check the available tables and schemas
+- Database tools for querying CO2, energy, and emissions data from Our World in Data
+  * get_tables: Lists all available tables in the database
+  * get_schema: Shows the structure/columns of a specific table  
+  * query_database: Execute SQL queries on the database
 - Currency conversion tools for converting between different currencies
 - Calculate tool for mathematical operations (addition, subtraction, multiplication, division, percentages, etc.)
 - Vector search tool for searching through PDF documents including annual reports and sustainability reports of Erste Group, GSK and Swisscom
@@ -324,7 +350,10 @@ Sources format (when available):
 - When no sources: null
 
 CRITICAL: 
-- If the question requires database information, first generate and execute a SQL query using the query_database tool
+- If the question requires database information, FIRST call get_tables to see available tables
+2. THEN call get_schema for the relevant table to see exact column names
+3. FINALLY call query_database with the correct table and column names
+4. DO NOT guess or make up table names - always use get_tables and get_schema first
 - Use the exact table and column names shown in the schemas above
 - For numerical answers, provide precise values without units or explanations
 - If information is not available, return null
@@ -447,6 +476,13 @@ EXAMPLE:
         elif any(tool["name"] == tool_name for tool in self.vector_db_tools):
             if self.vector_db_client:
                 return await self.vector_db_client.call_tool(tool_name, tool_input)
+        elif any(tool["name"] == tool_name for tool in self.database_schema_tools):
+            # Handle built-in database schema tools
+            if tool_name == "get_tables":
+                return get_tables()
+            elif tool_name == "get_schema":
+                return get_schema(tool_input.get("table_name", ""))
+
         
         raise Exception(f"Tool {tool_name} not found in any available clients")
 
